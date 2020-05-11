@@ -44,7 +44,6 @@ public class Connexion extends HttpServlet {
         try {
             // Vérifier si le login existe
             User u = User.FindByloginAndPwd(request.getParameter("username"), request.getParameter("password"));
-//            request.setAttribute("user", u);
             if (u == null) {
                 RequestDispatcher rd = request.getRequestDispatcher("echec_login.jsp");
                 rd.forward(request, response);
@@ -53,43 +52,6 @@ public class Connexion extends HttpServlet {
             	session.setAttribute("user", u);
             	RequestDispatcher rd = request.getRequestDispatcher("menu.jsp");
             	rd.forward(request, response);
-
-//                session.setAttribute("login", u.getLogin());
-//                String role = u.getRole();
-//                session.setAttribute("role", role);
-//                response.setContentType("text/html;charset=UTF-8");
-//                if ("admin".equalsIgnoreCase(role)) {
-//                    try (PrintWriter out = response.getWriter()) {
-//                        out.println("<!DOCTYPE html>");
-//                        out.println("<html><head><title>Navigation Administrateur</title></head>");
-//                        out.println("<body>");
-//                        out.println("<h1>Hello " + session.getAttribute("login") + "</h1>");
-//                        out.println("<nav> <ul>");
-//                        out.println(" <li>Connected</li>");
-//                        out.println("<li><a href='NouveauUtilisateur.html'>Créer un nouveau utilisateur</a></li>");
-//                        out.println(" <li><a href='UserManager'>Afficher la liste des utilisateurs</a></li>");
-//                        out.println(" <li><a href='Deconnexion'>Déconnecter</a></li>");
-//                        out.println("</ul>");
-//                        out.println("</nav>");
-//                        out.println("</body>");
-//                        out.println("</html>");
-//                    }
-//
-//                } else {
-//                    try (PrintWriter out = response.getWriter()) {
-//                        /* TODO output your page here. You may use following sample code. */
-//                        out.println("<!DOCTYPE html>");
-//                        out.println("<html>");
-//                        out.println("<head>");
-//                        out.println("<title>Servlet Connexion</title>");
-//                        out.println("</head>");
-//                        out.println("<body>");
-//                        out.println("<h1>Succes : utilisateur non admin </h1>");
-//                        out.println("</body>");
-//                        out.println("</html>");
-//                    }
-//
-//                }
 
             }
         } catch (ClassNotFoundException | SQLException ex) {
