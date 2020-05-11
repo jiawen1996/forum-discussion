@@ -7,6 +7,8 @@ package Controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -35,19 +37,8 @@ public class Deconnexion extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         HttpSession session = request.getSession();
         session.invalidate();
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<meta http-equiv='refresh' content='5; URL=connexion.html' />");
-            out.println("<title> Deconnexion</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Vous êtes déconnecté et redirigé vers la page connexion </h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
+        RequestDispatcher rd = request.getRequestDispatcher("deconnexion.jsp");
+        rd.forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
