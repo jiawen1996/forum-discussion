@@ -2,9 +2,11 @@
 
 # forum-discussion
 
-Pour initial
-
 ![Imgur](https://i.imgur.com/7Ydg8x2.png)
+
+Il faut changer la location de votre projet
+
+![Imgur](https://i.imgur.com/BImalSN.png)
 
 
 
@@ -24,8 +26,3 @@ Pour initial
 
 ![Imgur](https://i.imgur.com/q4nK1I8.png)
 
-## Pour installer
-
-![image-20200511132834660](/Users/haida/Library/Application Support/typora-user-images/image-20200511132834660.png)
-
-![Imgur](https://i.imgur.com/BImalSN.png)
