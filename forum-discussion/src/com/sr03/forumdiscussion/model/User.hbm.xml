@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<!-- This mapping demonstrates content-based discrimination for the table-per-hierarchy 
+	mapping strategy, using a formula discriminator. -->
+
+<hibernate-mapping package="com.sr03.forumdiscussion.model">
+
+	<class name="User" lazy="true" table="db_sr03.user">
+
+		<meta attribute="class-description">
+			This class contains the user detail.
+		</meta>
+		<id name="id" type="int" column="id">
+			<generator class="native" />
+		</id>
+		<property name="firstName" column="fname" type="string" />
+		<property name="lastName" column="lname" type="string" />
+		<property name="login" column="login" type="string" />
+		<property name="isAdmin" column="is_admin" type="java.lang.Byte" />
+		<property name="gender" column="gender" type="string" />
+		<property name="pwd" column="pwd" type="string" />
+
+
+
+	</class>
+
+
+</hibernate-mapping>

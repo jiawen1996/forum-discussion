@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8" session="true"%>
-	<%@ page import="Model.User" %>
-<jsp:useBean id="user" class="Model.User" scope="session" />
+	<%@ page import="com.sr03.forumdiscussion.model.User" %>
+<jsp:useBean id="user" class="com.sr03.forumdiscussion.model.User" scope="session" />
 <!DOCTYPE html>
 <html>
 <head>

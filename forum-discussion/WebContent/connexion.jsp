@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<jsp:useBean id="info" class="Controller.Connexion" scope="request" />
+<jsp:useBean id="info" class="com.sr03.forumdiscussion.service.Connexion" scope="request" />
 <html>
 <head>
 <meta charset="UTF-8">
