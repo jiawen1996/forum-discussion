@@ -1,6 +1,7 @@
 package com.sr03.forumdiscussion.model;
 
 import java.util.Objects;
+import java.util.Set;
 
 /**
  *
@@ -16,11 +17,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
 public class User {
-	private int id;
+	private Integer id;
 	private String lastName;
 	private String firstName;
 	private String login; // mail adress
@@ -30,7 +32,7 @@ public class User {
 	// Un Byte correspond à la colonne is_Admin
 	private Byte isAdmin;
 	private Role role = Role.Other;
-	private ArrayList<Forum> forumSubscriptions;
+	private Set<Forum> forumSubscriptions;
 
 	private enum Role {
 		Other, Admin
@@ -38,6 +40,7 @@ public class User {
 
 	// constructeur par défaut
 	public User() {
+		this.forumSubscriptions = new HashSet<Forum>();
 
 	}
 
@@ -67,11 +70,11 @@ public class User {
 		return gender;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 
@@ -117,7 +120,7 @@ public class User {
 		return role.toString();
 	}
 
-	public ArrayList<Forum> getForumSubscriptions() {
+	public Set<Forum> getForumSubscriptions() {
 		return forumSubscriptions;
 	}
 
