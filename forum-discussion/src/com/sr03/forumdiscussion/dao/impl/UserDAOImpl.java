@@ -1,4 +1,4 @@
-package com.sr03.forumdiscussion.dao;
+package com.sr03.forumdiscussion.dao.impl;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -9,8 +9,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.TypedQuery;
-
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -18,20 +16,23 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
 
-import com.sr03.forumdiscussion.model.MyConnectionClass;
+import com.sr03.forumdiscussion.dao.IUserDAO;
 import com.sr03.forumdiscussion.model.User;
 
-public class UserDAO implements DAO<User> {
+public class UserDAOImpl implements IUserDAO<User> {
 	private static SessionFactory factory = new Configuration().configure().buildSessionFactory();
+	private static String _query = "from User"; // for findAll static Method
 
 	@Override
-	public void _insert(User u) {
+	public Integer _insert(String lastName, String firstName, String login, Byte isAdmin, String gender,
+			String password) {
 		Session session = factory.openSession();
 		Transaction tx = null;
 		Integer UserId = null;
 		try {
 			tx = session.beginTransaction();
-			UserId = (Integer) session.save(u);
+			User newUser = new User(lastName, firstName, login, isAdmin, gender, password);
+			UserId = (Integer) session.save(newUser);
 			tx.commit();
 		} catch (HibernateException e) {
 			if (tx != null)
@@ -40,20 +41,18 @@ public class UserDAO implements DAO<User> {
 		} finally {
 			session.close();
 		}
-		return;
+		return UserId;
 	}
 
 	@Override
-	public void _update(User u, String[] params) {
+	public void _update(User u) {
 		Session session = factory.openSession();
 		Transaction tx = null;
-		Integer UserId = null;
 		try {
 			tx = session.beginTransaction();
 			int userId = u.getId();
-			User user = (User)session.get(User.class, userId);
+			User user = (User) session.get(User.class, userId);
 			user.setFirstName(u.getFirstName());
-			user.set
 			session.update(user);
 			tx.commit();
 		} catch (HibernateException e) {
@@ -71,7 +70,24 @@ public class UserDAO implements DAO<User> {
 
 	}
 
-	public static User FindByID(int id) {
+	public static List<User> FindById(Integer id) throws IOException, ClassNotFoundException, SQLException {
+		Session session = factory.openSession();
+		Transaction tx = null;
+		try {
+			tx = session.beginTransaction();
+			String hql = "from User where id = ?";
+			Query query = session.createQuery(hql, User.class);
+			query.setParameter(0, id);
+			List<User> res = query.getResultList();
+			tx.commit();
+			return res;
+		} catch (HibernateException e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
 		return null;
 	}
 
@@ -96,15 +112,27 @@ public class UserDAO implements DAO<User> {
 			session.close();
 		}
 		return null;
-
 	}
 
 	public static List<User> FindAll() throws IOException, ClassNotFoundException, SQLException {
 		List<User> listUser = new ArrayList<User>();
-
-		// TODO
-
-		return listUser;
+		Session session = factory.openSession();
+		Transaction tx = null;
+		try {
+			tx = session.beginTransaction();
+			String hql = _query;
+			Query query = session.createQuery(hql, User.class);
+			listUser = query.getResultList();
+			tx.commit();
+			return listUser;
+		} catch (HibernateException e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		return null;
 	}
 
 	public static List<User> FindByLastAndFirstName(String fname, String lname)

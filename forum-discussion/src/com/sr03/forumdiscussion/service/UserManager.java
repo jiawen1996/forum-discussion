@@ -23,169 +23,171 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.sr03.forumdiscussion.dao.UserDAO;
+import com.sr03.forumdiscussion.dao.impl.UserDAOImpl;
 import com.sr03.forumdiscussion.model.User;
 
 /**
  *
  * @author lounis
  */
-@WebServlet(name = "UserManager", urlPatterns = {"/UserManager"})
+@WebServlet(name = "UserManager", urlPatterns = { "/UserManager" })
 public class UserManager extends HttpServlet {
+	private UserDAOImpl ud = new UserDAOImpl();
+	@Override
+	public void init() throws ServletException {
+		super.init(); // To change body of generated methods, choose Tools | Templates.
 
-    @Override
-    public void init() throws ServletException {
-        super.init(); //To change body of generated methods, choose Tools | Templates.
+	}
+	
+	public void creerNvUtilsateur() {
+		
+	}
 
-    }
+	/**
+	 * Processes requests for both HTTP <code>POST</code> methods.
+	 *
+	 * @param request  servlet request
+	 * @param response servlet response
+	 * @throws ServletException if a servlet-specific error occurs
+	 * @throws IOException      if an I/O error occurs
+	 */
+	protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		response.setContentType("text/html;charset=UTF-8");
+		HttpSession session = request.getSession();
+		
+		
+		if (session.getAttribute("login") == null || !"admin".equalsIgnoreCase((String) session.getAttribute("role"))) {
+			try (PrintWriter out = response.getWriter()) {
+				/* TODO output your page here. You may use following sample code. */
+				out.println("<!DOCTYPE html>");
+				out.println("<html>");
+				out.println("<head>");
+				out.println("<meta http-equiv='refresh' content='5; URL=connexion.html' />");
+				out.println("<title> Non autorisé</title>");
+				out.println("</head>");
+				out.println("<body>");
+				out.println(
+						"<h1>Vous n'êtes pas connecté ou vous n'êtes pas admin => redirigé vers la page connexion </h1>");
+				out.println("</body>");
+				out.println("</html>");
+			}
 
-    /**
-     * Processes requests for both HTTP  <code>POST</code> methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        HttpSession session = request.getSession();
-        if (session.getAttribute("login") == null || !"admin".equalsIgnoreCase((String) session.getAttribute("role"))) {
-            try (PrintWriter out = response.getWriter()) {
-                /* TODO output your page here. You may use following sample code. */
-                out.println("<!DOCTYPE html>");
-                out.println("<html>");
-                out.println("<head>");
-                out.println("<meta http-equiv='refresh' content='5; URL=connexion.html' />");
-                out.println("<title> Non autorisé</title>");
-                out.println("</head>");
-                out.println("<body>");
-                out.println("<h1>Vous n'êtes pas connecté ou vous n'êtes pas admin => redirigé vers la page connexion </h1>");
-                out.println("</body>");
-                out.println("</html>");
-            }
+		} else {
 
-        } else {
+			String firstName = request.getParameter("User first name");
+			String lastName = request.getParameter("User familly name");
+			String mail = request.getParameter("User email");
+			String gender = request.getParameter("gender");
+			String password = request.getParameter("User password");
+			int isAdmin = request.getParameter("admin") != null ? 1 : 0;
 
-//            try {
+			UserDAOImpl userDAO = new UserDAOImpl();
+			Integer newUserId = userDAO._insert(lastName, firstName, mail, (byte) isAdmin, gender, password);
+			User newUser;
+			try {
+				newUser = UserDAOImpl.FindById(newUserId).get(0);
+				response.setContentType("text/html;charset=UTF-8");
+				try (PrintWriter out = response.getWriter()) {
+					/* TODO output your page here. You may use following sample code. */
+					out.println("<h1> Un nouveau utilisateur est ajouté : </h1>");
+					out.println(newUser.toString());
+					RequestDispatcher rd = request.getRequestDispatcher("menu.jsp");
+					rd.include(request, response);
+				}
+			} catch (SQLException | ClassNotFoundException ex) {
+				// TODO Auto-generated catch block
+				Logger.getLogger(UserManager.class.getName()).log(Level.SEVERE, null, ex);
+			}
 
-                String firstName = request.getParameter("User first name");
-                String lastName = request.getParameter("User familly name");
-                String mail = request.getParameter("User email");
-                String gender = request.getParameter("gender");
-                String password = request.getParameter("User password");
-                User user = new User(lastName, firstName, mail, gender, password);
-                if (request.getParameter("role") != null) {
-                    user.setRole(request.getParameter("role"));
-                }
-                UserDAO userDAO = new UserDAO();
-                userDAO._insert(user);
-                response.setContentType("text/html;charset=UTF-8");
-                try (PrintWriter out = response.getWriter()) {
-                    /* TODO output your page here. You may use following sample code. */
-                    out.println("<!DOCTYPE html>");
-                    out.println("<html>");
-                    out.println("<head>");
-                    out.println("<title>Un nouveau utilisateur </title>");
-                    out.println("</head>");
-                    out.println("<body>");
-                    out.println("<h1> Un nouveau utilisateur est ajouté : </h1>");
-                    out.println(user.toString());
-                    out.println("</body>");
-                    out.println("</html>");
+		}
+	}
 
-                }
-//            } 
-//                catch (SQLException | ClassNotFoundException ex) {
-//                Logger.getLogger(UserManager.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-        }
-    }
+	// <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the
+	// + sign on the left to edit the code.">
+	/**
+	 * Handles the HTTP <code>GET</code> method.
+	 *
+	 * @param request  servlet request
+	 * @param response servlet response
+	 * @throws ServletException if a servlet-specific error occurs
+	 * @throws IOException      if an I/O error occurs
+	 */
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		response.setContentType("text/html;charset=UTF-8");
+		response.setContentType("text/html;charset=UTF-8");
+		HttpSession session = request.getSession();
+		if (session.getAttribute("login") == null
+				|| "admin".equalsIgnoreCase((String) session.getAttribute("role")) == false) {
+			try (PrintWriter out = response.getWriter()) {
+				/* TODO output your page here. You may use following sample code. */
+				out.println("<!DOCTYPE html>");
+				out.println("<html>");
+				out.println("<head>");
+				out.println("<meta http-equiv='refresh' content='5; URL=connexion.html' />");
+				out.println("<title> Non autorisé</title>");
+				out.println("</head>");
+				out.println("<body>");
+				out.println(
+						"<h1>Vous n'êtes pas connecté ou vous n'êtes pas admin => redirigé vers la page connexion </h1>");
+				out.println("</body>");
+				out.println("</html>");
+			}
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        response.setContentType("text/html;charset=UTF-8");
-        HttpSession session = request.getSession();
-        if (session.getAttribute("login") == null || "admin".equalsIgnoreCase((String) session.getAttribute("role")) == false) {
-            try (PrintWriter out = response.getWriter()) {
-                /* TODO output your page here. You may use following sample code. */
-                out.println("<!DOCTYPE html>");
-                out.println("<html>");
-                out.println("<head>");
-                out.println("<meta http-equiv='refresh' content='5; URL=connexion.html' />");
-                out.println("<title> Non autorisé</title>");
-                out.println("</head>");
-                out.println("<body>");
-                out.println("<h1>Vous n'êtes pas connecté ou vous n'êtes pas admin => redirigé vers la page connexion </h1>");
-                out.println("</body>");
-                out.println("</html>");
-            }
+		} else {
+			try (PrintWriter out = response.getWriter()) {
+				/* TODO output your page here. You may use following sample code. */
+				out.println("<!DOCTYPE html>");
+				out.println("<html>");
+				out.println("<head>");
+				out.println("<title>Un nouveau utilisateur </title>");
+				out.println("</head>");
+				out.println("<body>");
+				out.println("<h1> Liste des utilisateurs : </h1>");
+				out.println("<ol>");
+				List<User> listUser;
+				try {
+					listUser = UserDAOImpl.FindAll();
+					for (int index = 0; index < listUser.size(); index++) {
+						out.println("<li>");
+						out.println(listUser.get(index).toString());
+						out.println("</li>");
+					}
+				} catch (ClassNotFoundException | SQLException ex) {
+					Logger.getLogger(UserManager.class.getName()).log(Level.SEVERE, null, ex);
+				}
 
-        } else {
-            try (PrintWriter out = response.getWriter()) {
-                /* TODO output your page here. You may use following sample code. */
-                out.println("<!DOCTYPE html>");
-                out.println("<html>");
-                out.println("<head>");
-                out.println("<title>Un nouveau utilisateur </title>");
-                out.println("</head>");
-                out.println("<body>");
-                out.println("<h1> Liste des utilisateurs : </h1>");
-                out.println("<ol>");
-                List<User> listUser;
-                try {
-                    listUser = UserDAO.FindAll();
-                    for (int index = 0; index < listUser.size(); index++) {
-                        out.println("<li>");
-                        out.println(listUser.get(index).toString());
-                        out.println("</li>");
-                    }
-                } catch (ClassNotFoundException | SQLException ex) {
-                    Logger.getLogger(UserManager.class.getName()).log(Level.SEVERE, null, ex);
-                }
+				out.println("</ol>");
+				out.println("</body>");
+				out.println("</html>");
+			}
+		}
+	}
 
-                out.println("</ol>");
-                out.println("</body>");
-                out.println("</html>");
-            }
-        }
-    }
+	/**
+	 * Handles the HTTP <code>POST</code> method.
+	 *
+	 * @param request  servlet request
+	 * @param response servlet response
+	 * @throws ServletException if a servlet-specific error occurs
+	 * @throws IOException      if an I/O error occurs
+	 */
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		processRequest(request, response);
+	}
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
-    }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
+	/**
+	 * Returns a short description of the servlet.
+	 *
+	 * @return a String containing servlet description
+	 */
+	@Override
+	public String getServletInfo() {
+		return "Short description";
+	}// </editor-fold>
 
 }
-

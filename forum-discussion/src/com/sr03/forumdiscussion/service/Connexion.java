@@ -21,8 +21,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.sr03.forumdiscussion.dao.DAO;
-import com.sr03.forumdiscussion.dao.UserDAO;
+import com.sr03.forumdiscussion.dao.IUserDAO;
+import com.sr03.forumdiscussion.dao.impl.UserDAOImpl;
 import com.sr03.forumdiscussion.model.User;
 
 /**
@@ -31,7 +31,6 @@ import com.sr03.forumdiscussion.model.User;
  */
 @WebServlet(name = "Connexion", urlPatterns = {"/Connexion"})
 public class Connexion extends HttpServlet {
-	private UserDAO ud = new UserDAO();
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -41,12 +40,14 @@ public class Connexion extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+//	private UserDAOImpl ud = new UserDAOImpl();
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         try {
             // Vérifier si le login existe
-            User u = UserDAO.FindByloginAndPwd(request.getParameter("username"), request.getParameter("password")).get(0);
+            User u = UserDAOImpl.FindByloginAndPwd(request.getParameter("username"), request.getParameter("password")).get(0);
             if (u == null) {
                 RequestDispatcher rd = request.getRequestDispatcher("echec_login.jsp");
                 rd.forward(request, response);

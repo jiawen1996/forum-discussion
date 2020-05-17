@@ -30,6 +30,13 @@
 		} else {
 	%>
 	<h1>Succes : utilisateur non admin.</h1>
+	<nav>
+		<ul>
+			<li><a href='ajouter_nv_forum.jsp'>Créer un nouveau
+				forum</a></li>
+			<li><a href='UserManager'>Afficher la liste des forum</a></li>
+		</ul>
+	</nav>
 	<%
 		}
 	%>

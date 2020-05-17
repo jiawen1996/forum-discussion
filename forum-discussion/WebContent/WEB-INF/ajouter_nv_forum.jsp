@@ -1,12 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-    
-<%-- <jsp:useBean id="info" class="Controller.Connexion" scope="request" /> --%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Ajouter un nouveau utilisateur</title>
+<title>Ajouter un nouveau forum</title>
 </head>
 <body>
 	<form action="Validation" method="post">
