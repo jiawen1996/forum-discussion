@@ -1,10 +1,16 @@
 package com.sr03.forumdiscussion.dao.impl;
 
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.query.Query;
 
 import com.sr03.forumdiscussion.dao.IForumDAO;
 import com.sr03.forumdiscussion.model.Forum;
@@ -19,7 +25,7 @@ public class ForumDAOImpl implements IForumDAO<Forum> {
 	
 	
 	@Override
-	public Integer _insert(String title, String description, Integer owner) {
+	public Integer _insert(String title, String description, User owner) {
 		// TODO Auto-generated method stub
 		Session session = factory.openSession();
 		Transaction tx = null;
@@ -49,6 +55,28 @@ public class ForumDAOImpl implements IForumDAO<Forum> {
 	public void _delete(Forum f) {
 		// TODO Auto-generated method stub
 
+	}
+	
+	public static List<Forum> FindAll(Integer ownerId) throws IOException, ClassNotFoundException, SQLException {
+		List<Forum> listForums = new ArrayList<Forum>();
+		Session session = factory.openSession();
+		Transaction tx = null;
+		try {
+			tx = session.beginTransaction();
+			String hql = "from Forum where owner = ?";
+			Query query = session.createQuery(hql, Forum.class);
+			query.setParameter(0, ownerId);
+			listForums = query.getResultList();
+			tx.commit();
+			return listForums;
+		} catch (HibernateException e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		return null;
 	}
 
 }

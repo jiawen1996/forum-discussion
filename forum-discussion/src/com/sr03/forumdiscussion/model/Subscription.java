@@ -1,33 +1,33 @@
 package com.sr03.forumdiscussion.model;
 
 public class Subscription {
-	private Integer idUser;
-	private Integer idForum;
+	private User user;
+	private Forum forum;
 
 	// constructeur par défaut
 	public Subscription() {
 
 	}
 
-	public Subscription(Integer idUser, Integer idForum) {
-		this.idUser = idUser;
-		this.idForum = idForum;
+	public Subscription(User u, Forum f) {
+		this.user = u;
+		this.forum = f;
 	}
 
-	public Integer getIdUser() {
-		return idUser;
+	public User getUser() {
+		return user;
 	}
 
-	public void setIdUser(Integer idUser) {
-		this.idUser = idUser;
+	public void setUser(User user) {
+		this.user = user;
 	}
 
-	public Integer getIdForum() {
-		return idForum;
+	public Forum getForum() {
+		return forum;
 	}
 
-	public void setIdForum(Integer idForum) {
-		this.idForum = idForum;
+	public void setForum(Forum forum) {
+		this.forum = forum;
 	}
 
 }

@@ -7,21 +7,20 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 
 import com.sr03.forumdiscussion.dao.ISubscriptionDAO;
-import com.sr03.forumdiscussion.model.Forum;
-import com.sr03.forumdiscussion.model.Subscription;
+import com.sr03.forumdiscussion.model.*;
 
 public class SubscriptionDAOImpl implements ISubscriptionDAO<Subscription>{
 	private static SessionFactory factory = new Configuration().configure().buildSessionFactory();
 	private static String _query = "from Subscription"; // for findAll static Method
 	
 	@Override
-	public Integer _insert(Integer idUser, Integer idForum) {
+	public Integer _insert(User u, Forum f) {
 		Session session = factory.openSession();
 		Transaction tx = null;
 		Integer SubscriptionId = null;
 		try {
 			tx = session.beginTransaction();
-			Subscription newSubscription = new Subscription(idUser, idForum);
+			Subscription newSubscription = new Subscription(u, f);
 			SubscriptionId = (Integer) session.save(newSubscription);
 			tx.commit();
 		} catch (HibernateException e) {

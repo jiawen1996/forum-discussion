@@ -10,16 +10,7 @@ import java.util.Set;
  * @author Linh
  */
 
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
 
 public class User {
 	private Integer id;
@@ -124,6 +115,10 @@ public class User {
 		return forumSubscriptions;
 	}
 
+	public void setForumSubscriptions(Set<Forum> forumSubscriptions) {
+		this.forumSubscriptions = forumSubscriptions;
+	}
+
 
 	@Override
 	public int hashCode() {
@@ -159,5 +154,7 @@ public class User {
 		return "User{" + "lastName=" + lastName + ", firstName=" + firstName + "" + ", login=" + login + ", gender="
 				+ gender + "," + " pwd=" + pwd + '}';
 	}
+
+
 
 }

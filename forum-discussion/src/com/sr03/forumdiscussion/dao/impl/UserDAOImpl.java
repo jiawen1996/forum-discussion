@@ -115,16 +115,16 @@ public class UserDAOImpl implements IUserDAO<User> {
 	}
 
 	public static List<User> FindAll() throws IOException, ClassNotFoundException, SQLException {
-		List<User> listUser = new ArrayList<User>();
+		List<User> listUsers = new ArrayList<User>();
 		Session session = factory.openSession();
 		Transaction tx = null;
 		try {
 			tx = session.beginTransaction();
 			String hql = _query;
 			Query query = session.createQuery(hql, User.class);
-			listUser = query.getResultList();
+			listUsers = query.getResultList();
 			tx.commit();
-			return listUser;
+			return listUsers;
 		} catch (HibernateException e) {
 			if (tx != null)
 				tx.rollback();

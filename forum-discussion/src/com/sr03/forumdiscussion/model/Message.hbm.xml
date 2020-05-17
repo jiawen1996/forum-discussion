@@ -9,22 +9,20 @@
 <hibernate-mapping
 	package="com.sr03.forumdiscussion.model">
 
-	<class name="User" lazy="true" table="db_sr03.user">
+	<class name="Message" lazy="true" table="db_sr03.message">
 
 		<meta attribute="class-description">
 			This class contains the user detail.
 		</meta>
-		<id name="id" type="int" column="id">
-			<generator class="native" />
-		</id>
-		<property name="firstName" column="fname" type="string" />
-		<property name="lastName" column="lname" type="string" />
-		<property name="login" column="login" type="string" />
-		<property name="isAdmin" column="is_admin"
-			type="java.lang.Byte" />
-		<property name="gender" column="gender" type="string" />
-		<property name="pwd" column="pwd" type="string" />
+		<composite-id name="messageId" class="MessageId">
+			<key-property name="id"></key-property>
+			<key-property name="destinationId"></key-property>
+		</composite-id>
 
+		<property name="content" column="content" type="string" />
+		
+		<many-to-one name="editor" class="User" column="editor"  />
+		<many-to-one name="destination" class="Forum" column="destination" insert="false" update="false"></many-to-one>
 	</class>
 
 

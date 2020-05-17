@@ -14,18 +14,15 @@ import java.util.List;
  */
 public class Message extends ActiveRecordBase{
 
+	//une clé composite
+	private MessageId messageId;
     private String content;
     private Date datePublication;
+    
+    //
     private User editor;
     private Forum destination; 
 
-    public Forum getDestination() {
-        return destination;
-    }
-
-    public void setDestination(Forum destination) {
-        this.destination = destination;
-    }
 
     /*
     java.text.SimpleDateFormat sdf = 
@@ -34,7 +31,6 @@ public class Message extends ActiveRecordBase{
     String currentTime = sdf.format(dt);
      */
     public Message() {
-        _builtFromDB=false;
         this.datePublication = new Date();
 
     }
@@ -44,6 +40,14 @@ public class Message extends ActiveRecordBase{
         this.datePublication = new Date();
         this.editor = editeur;
     }
+
+	public Forum getDestination() {
+		return destination;
+	}
+
+	public void setDestination(Forum destination) {
+		this.destination = destination;
+	}
 
     public String getContent() {
         return content;
@@ -69,6 +73,13 @@ public class Message extends ActiveRecordBase{
         this.editor = editor;
     }
 
+    public MessageId getMessageId() {
+    	return messageId;
+    }
+    
+    public void setMessageId(MessageId messageId) {
+		this.messageId = messageId;
+	}
 
 //DB access methods
     
@@ -101,5 +112,6 @@ public class Message extends ActiveRecordBase{
     public static List<Message> FindbyUser(int idUser){
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
     
 }

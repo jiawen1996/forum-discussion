@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC 
     "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
     "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
@@ -6,7 +6,8 @@
 <!-- This mapping demonstrates content-based discrimination for the table-per-hierarchy 
 	mapping strategy, using a formula discriminator. -->
 
-<hibernate-mapping package="com.sr03.forumdiscussion.model">
+<hibernate-mapping
+	package="com.sr03.forumdiscussion.model">
 
 	<class name="Forum" lazy="true" table="db_sr03.forum">
 
@@ -17,8 +18,19 @@
 			<generator class="native" />
 		</id>
 		<property name="title" column="title" type="string" />
-		<property name="owner" column="owner" type="Integer" />
-		<property name="description" column="description" type="string" />
+		<property name="description" column="description"
+			type="string" />
+		<many-to-one name="owner" class="User" column="owner"  />
+		<!-- <component name="message" class="Message">
+			<set cascade="save-update" name="messages"
+				table="db_sr03.message">
+				la clé étrangère de la table message est destination
+				<key column="destination"></key>
+				<one-to-many class="Message"></one-to-many>
+			</set>
+		</component> -->
+
+
 	</class>
 
 

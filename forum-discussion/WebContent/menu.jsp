@@ -22,6 +22,9 @@
 			<li><a href='ajouter_nv_util.jsp'>Créer un nouveau
 				utilisateur</a></li>
 			<li><a href='UserManager'>Afficher la liste des utilisateurs</a></li>
+			<li><a href='ajouter_nv_forum.jsp'>Créer un nouveau
+				forum</a></li>
+			<li><a href='ForumManager'>Afficher la liste des forum</a></li>
 			<li><a href='Deconnexion'>Déconnecter</a></li>
 		</ul>
 	</nav>
@@ -34,7 +37,7 @@
 		<ul>
 			<li><a href='ajouter_nv_forum.jsp'>Créer un nouveau
 				forum</a></li>
-			<li><a href='UserManager'>Afficher la liste des forum</a></li>
+			<li><a href='ForumManager'>Afficher la liste des forum</a></li>
 		</ul>
 	</nav>
 	<%

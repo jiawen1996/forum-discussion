@@ -26,14 +26,14 @@ public class Forum {
 	private String title;
 	private String description;
 	private Set<Message> messages;
-	private Integer owner;
+	private User owner;
 
 	// constructeur par défaut
 	public Forum() {
 		this.messages = new HashSet<Message>();
 	}
 
-	public Forum(String titre, String description, Integer u) {
+	public Forum(String titre, String description, User u) {
 		this.messages = new HashSet<Message>();
 		this.title = titre;
 		this.description = description;
@@ -64,11 +64,11 @@ public class Forum {
 		this.messages = messages;
 	}
 
-	public Integer getOwner() {
+	public User getOwner() {
 		return owner;
 	}
 
-	public void setOwner(Integer owner) {
+	public void setOwner(User owner) {
 		this.owner = owner;
 	}
 
