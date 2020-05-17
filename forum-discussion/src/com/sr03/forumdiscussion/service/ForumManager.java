@@ -3,6 +3,7 @@ package com.sr03.forumdiscussion.service;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -45,7 +46,7 @@ public class ForumManager extends HttpServlet {
 		try {
 			HttpSession session = request.getSession();
 			User currentUser = (User) session.getAttribute("user");
-			List<Forum> listForums = ForumDAOImpl.FindAll(currentUser);
+			List<Forum> listForums = (ArrayList<Forum>)ForumDAOImpl.FindAll(currentUser);
 			try (PrintWriter out = response.getWriter()) {
 				/* TODO output your page here. You may use following sample code. */
 				session.setAttribute("listForums", listForums);
