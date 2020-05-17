@@ -5,17 +5,12 @@
  */
 package com.sr03.forumdiscussion.model;
 
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
+
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.Id;
 
 /**
  *
@@ -27,10 +22,12 @@ public class Forum {
 	private String description;
 	private Set<Message> messages;
 	private User owner;
+	private Set<User> users;
 
 	// constructeur par défaut
 	public Forum() {
 		this.messages = new HashSet<Message>();
+		this.users = new HashSet<User>();
 	}
 
 	public Forum(String titre, String description, User u) {
@@ -106,6 +103,14 @@ public class Forum {
 
 	public static List<Forum> FindAll() {
 		return null;
+	}
+
+	public Set<User> getUsers() {
+		return users;
+	}
+
+	public void setUsers(Set<User> users) {
+		this.users = users;
 	}
 
 }

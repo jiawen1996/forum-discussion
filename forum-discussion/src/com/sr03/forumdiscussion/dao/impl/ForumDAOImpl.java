@@ -57,16 +57,15 @@ public class ForumDAOImpl implements IForumDAO<Forum> {
 
 	}
 	
-	public static List<Forum> FindAll(Integer ownerId) throws IOException, ClassNotFoundException, SQLException {
-		List<Forum> listForums = new ArrayList<Forum>();
+	public static List<Forum> FindAll(User owner) throws IOException, ClassNotFoundException, SQLException {
 		Session session = factory.openSession();
 		Transaction tx = null;
 		try {
 			tx = session.beginTransaction();
 			String hql = "from Forum where owner = ?";
 			Query query = session.createQuery(hql, Forum.class);
-			query.setParameter(0, ownerId);
-			listForums = query.getResultList();
+			query.setParameter(0, owner);
+			List<Forum> listForums = query.getResultList();
 			tx.commit();
 			return listForums;
 		} catch (HibernateException e) {

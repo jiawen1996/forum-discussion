@@ -3,16 +3,16 @@ package com.sr03.forumdiscussion.model;
 import java.io.Serializable;
 
 public class MessageId implements Serializable {
-	private Integer id;
+	private int id;
 	private int destinationId;
 	public MessageId() {
 		
 	}
 	
-	public Integer getId() {
+	public int getId() {
 		return id;
 	}
-	public void setId(Integer id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 	public int getDestinationId() {

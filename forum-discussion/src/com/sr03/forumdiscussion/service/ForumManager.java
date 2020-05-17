@@ -45,7 +45,7 @@ public class ForumManager extends HttpServlet {
 		try {
 			HttpSession session = request.getSession();
 			User currentUser = (User) session.getAttribute("user");
-			List<Forum> listForums = ForumDAOImpl.FindAll(currentUser.getId());
+			List<Forum> listForums = ForumDAOImpl.FindAll(currentUser);
 			try (PrintWriter out = response.getWriter()) {
 				/* TODO output your page here. You may use following sample code. */
 				session.setAttribute("listForums", listForums);

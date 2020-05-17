@@ -24,6 +24,7 @@ public class User {
 	private Byte isAdmin;
 	private Role role = Role.Other;
 	private Set<Forum> forumSubscriptions;
+	private Set<Message> messages;
 
 	private enum Role {
 		Other, Admin
@@ -32,6 +33,7 @@ public class User {
 	// constructeur par défaut
 	public User() {
 		this.forumSubscriptions = new HashSet<Forum>();
+		this.messages = new HashSet<Message>();
 
 	}
 
@@ -153,6 +155,14 @@ public class User {
 	public String toString() {
 		return "User{" + "lastName=" + lastName + ", firstName=" + firstName + "" + ", login=" + login + ", gender="
 				+ gender + "," + " pwd=" + pwd + '}';
+	}
+
+	public Set<Message> getMessages() {
+		return messages;
+	}
+
+	public void setMessages(Set<Message> messages) {
+		this.messages = messages;
 	}
 
 

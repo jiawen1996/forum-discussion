@@ -25,6 +25,19 @@
 		<property name="gender" column="gender" type="string" />
 		<property name="pwd" column="pwd" type="string" />
 
+
+		<set cascade="all" name="messages" table="db_sr03.message">
+			<!--la clé étrangère de la table message est editor -->
+			<key column="editor"></key>
+			<one-to-many class="Message" />
+		</set>
+		
+		<!-- mapping de type many to many -->
+		<set cascade="all" name="forumSubscriptions" table="db_sr03.subscriptions">
+			<!-- la clé étrangère de la table Subscriptions est id_user -->
+			<key column="id_user"></key>
+			<many-to-many column="id_forum" class="Forum" />
+		</set>
 	</class>
 
 
