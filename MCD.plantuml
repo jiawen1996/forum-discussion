@@ -1,0 +1,38 @@
+@startuml Forum
+Class User{
+    {field} id : INT {clef}
+    {field} login : VARCHAR
+    {field} fname : VARCHAR
+    {field} lname : VARCHAR
+    {field} pwd : VARCHAR
+    {field} gender : VARCHAR
+    {field} is_admin : TINYINT
+}
+
+Class Forum{
+    {field} id : INT {clef}
+    {field} title : VARCHAR
+    {field} owner : User
+    {field} description : VARCHAR
+}
+
+Class Subscriptions{
+    {field} id_user : INT {clef étrangère}
+    {field} id_forum : INT {clef étrangère}
+    {field} owner : User
+    {field} description : VARCHAR
+}
+
+Class Message{
+    {field} id : INT {clef locale}
+    {field} id_forum : INT {clef étrangère}
+    {field} editor : INT
+    {field} content : VARCHAR
+}
+
+User "*" - "*" Forum
+(User, Forum) .. Subscriptions
+
+Forum *-- "*" Message
+
+@enduml

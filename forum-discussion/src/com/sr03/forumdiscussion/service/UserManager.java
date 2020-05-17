@@ -74,7 +74,7 @@ public class UserManager extends HttpServlet {
 			}
 
 		} else {
-
+			//récupérer des champs depuis la formulaire
 			String firstName = request.getParameter("User first name");
 			String lastName = request.getParameter("User familly name");
 			String mail = request.getParameter("User email");
@@ -89,7 +89,6 @@ public class UserManager extends HttpServlet {
 				newUser = UserDAOImpl.FindById(newUserId).get(0);
 				response.setContentType("text/html;charset=UTF-8");
 				try (PrintWriter out = response.getWriter()) {
-					/* TODO output your page here. You may use following sample code. */
 					out.println("<h1> Un nouveau utilisateur est ajouté : </h1>");
 					out.println(newUser.toString());
 					RequestDispatcher rd = request.getRequestDispatcher("menu.jsp");
