@@ -42,7 +42,7 @@ public class ForumManager extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		 
 		try {
 			HttpSession session = request.getSession();
 			User currentUser = (User) session.getAttribute("user");
@@ -54,8 +54,7 @@ public class ForumManager extends HttpServlet {
 				rd.forward(request, response);
 			}
 		} catch (SQLException | ClassNotFoundException ex) {
-			// TODO Auto-generated catch block
-			Logger.getLogger(UserManager.class.getName()).log(Level.SEVERE, null, ex);
+			Logger.getLogger(ForumManager.class.getName()).log(Level.SEVERE, null, ex);
 		}
 	}
 
@@ -64,8 +63,7 @@ public class ForumManager extends HttpServlet {
 	 *      response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		// TODO Auto-generated method stub
+			throws ServletException, IOException { 
 		doGet(request, response);
 	}
 
