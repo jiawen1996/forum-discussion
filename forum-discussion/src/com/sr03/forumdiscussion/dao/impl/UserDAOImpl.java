@@ -1,11 +1,7 @@
 package com.sr03.forumdiscussion.dao.impl;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,7 +72,7 @@ public class UserDAOImpl implements IUserDAO<User> {
 		try {
 			tx = session.beginTransaction();
 			String hql = "from User where id = ?";
-			Query query = session.createQuery(hql, User.class);
+			Query<User> query = session.createQuery(hql, User.class);
 			query.setParameter(0, id);
 			List<User> res = query.getResultList();
 			tx.commit();
@@ -98,7 +94,7 @@ public class UserDAOImpl implements IUserDAO<User> {
 		try {
 			tx = session.beginTransaction();
 			String hql = "from User where login = ? and pwd = ?";
-			Query query = session.createQuery(hql, User.class);
+			Query<User> query = session.createQuery(hql, User.class);
 			query.setParameter(0, login);
 			query.setParameter(1, pwd);
 			List<User> res = query.getResultList();
@@ -121,7 +117,7 @@ public class UserDAOImpl implements IUserDAO<User> {
 		try {
 			tx = session.beginTransaction();
 			String hql = _query;
-			Query query = session.createQuery(hql, User.class);
+			Query<User> query = session.createQuery(hql, User.class);
 			listUsers = query.getResultList();
 			tx.commit();
 			return listUsers;
@@ -142,7 +138,7 @@ public class UserDAOImpl implements IUserDAO<User> {
 		try {
 			tx = session.beginTransaction();
 			String hql = "from User where fname = ? and lname = ?";
-			Query query = session.createQuery(hql, User.class);
+			Query<User> query = session.createQuery(hql, User.class);
 			query.setParameter(0, fname);
 			query.setParameter(1, lname);
 			List<User> res = query.getResultList();
