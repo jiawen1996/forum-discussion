@@ -9,10 +9,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.RequestDispatcher;
@@ -28,21 +25,23 @@ import com.sr03.forumdiscussion.model.User;
 
 /**
  * Servlet implementation class UserManager
+ * 
  * @author lounis
  */
 @WebServlet(name = "UserManager", urlPatterns = { "/UserManager" })
 public class UserManager extends HttpServlet {
-	
+
 	private static final long serialVersionUID = 1L;
 	private UserDAOImpl ud = new UserDAOImpl();
+
 	@Override
 	public void init() throws ServletException {
 		super.init(); // To change body of generated methods, choose Tools | Templates.
 
 	}
-	
+
 	public void creerNvUtilsateur() {
-		
+
 	}
 
 	/**
@@ -57,8 +56,7 @@ public class UserManager extends HttpServlet {
 			throws ServletException, IOException {
 		response.setContentType("text/html;charset=UTF-8");
 		HttpSession session = request.getSession();
-		
-		
+
 		if (session.getAttribute("login") == null || !"admin".equalsIgnoreCase((String) session.getAttribute("role"))) {
 			try (PrintWriter out = response.getWriter()) {
 				/* TODO output your page here. You may use following sample code. */
@@ -76,7 +74,7 @@ public class UserManager extends HttpServlet {
 			}
 
 		} else {
-			//récupérer des champs depuis la formulaire
+			// récupérer des champs depuis la formulaire
 			String firstName = request.getParameter("User first name");
 			String lastName = request.getParameter("User familly name");
 			String mail = request.getParameter("User email");
@@ -118,17 +116,17 @@ public class UserManager extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		response.setContentType("text/html;charset=UTF-8");
-		
+
 		try {
-			
+
 			HttpSession session = request.getSession();
 			User currentUser = (User) session.getAttribute("user");
-			
+
 			if (currentUser == null || currentUser.getIsAdmin() != 1) {
 				RequestDispatcher rd = request.getRequestDispatcher("affi_list_forum.jsp");
 				rd.forward(request, response);
 			} else {
-				List<User> listUser = (ArrayList<User>)UserDAOImpl.FindAll();
+				List<User> listUser = (ArrayList<User>) UserDAOImpl.FindAll();
 				session.setAttribute("listUser", listUser);
 				RequestDispatcher rd = request.getRequestDispatcher("affi_list_util.jsp");
 				rd.forward(request, response);
@@ -149,7 +147,7 @@ public class UserManager extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		//processRequest(request, response);
+		// processRequest(request, response);
 	}
 
 	/**

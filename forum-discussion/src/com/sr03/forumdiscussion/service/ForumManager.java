@@ -37,16 +37,53 @@ public class ForumManager extends HttpServlet {
 	}
 
 	/**
+	 * Processes requests for both HTTP <code>POST</code> methods.
+	 *
+	 * @param request  servlet request
+	 * @param response servlet response
+	 * @throws ServletException if a servlet-specific error occurs
+	 * @throws IOException      if an I/O error occurs
+	 */
+	protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		response.setContentType("text/html;charset=UTF-8");
+		HttpSession session = request.getSession();
+
+		// récupérer des champs depuis la formulaire
+		String title = request.getParameter("Forum title");
+		String description = request.getParameter("Forum description");
+
+		User currentUser = (User) session.getAttribute("user");
+
+		ForumDAOImpl forumDAO = new ForumDAOImpl();
+		Integer newForumId = forumDAO._insert(title, description, currentUser);
+		try {
+			Forum newForum = ForumDAOImpl.FindById(newForumId).get(0);
+			response.setContentType("text/html;charset=UTF-8");
+			try (PrintWriter out = response.getWriter()) {
+				out.println("<h1> Un nouveau forum est ajouté : </h1>");
+				out.println(newForum.toString());
+				RequestDispatcher rd = request.getRequestDispatcher("menu.jsp");
+				rd.include(request, response);
+			}
+		} catch (SQLException | ClassNotFoundException ex) {
+			// TODO Auto-generated catch block
+			Logger.getLogger(UserManager.class.getName()).log(Level.SEVERE, null, ex);
+		}
+
+	}
+
+	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		 
+
 		try {
 			HttpSession session = request.getSession();
 			User currentUser = (User) session.getAttribute("user");
-			List<Forum> listForums = (ArrayList<Forum>)ForumDAOImpl.FindAll(currentUser);
+			List<Forum> listForums = (ArrayList<Forum>) ForumDAOImpl.FindAll(currentUser);
 			try (PrintWriter out = response.getWriter()) {
 				/* TODO output your page here. You may use following sample code. */
 				session.setAttribute("listForums", listForums);
@@ -63,8 +100,8 @@ public class ForumManager extends HttpServlet {
 	 *      response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException { 
-		doGet(request, response);
+			throws ServletException, IOException {
+		processRequest(request, response);
 	}
 
 }
