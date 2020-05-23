@@ -40,5 +40,7 @@
 			</tr>
 		</c:forEach>
 	</table>
+	<br/>
+	<a href="menu.jsp">Retour vers la page d'administration</a>
 </body>
 </html>
