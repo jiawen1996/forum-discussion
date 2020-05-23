@@ -49,7 +49,23 @@ public class ForumDAOImpl implements IForumDAO<Forum> {
 
 	@Override
 	public void _delete(Forum f) {
-		// TODO Auto-generated method stub
+		Session session = factory.openSession();
+		Transaction tx = null;
+
+		try {
+			tx = session.beginTransaction();
+			int forumId = f.getId();
+			Forum forum = (Forum) session.get(Forum.class, forumId);
+			session.delete(forum);
+			tx.commit();
+		} catch (HibernateException e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		return;
 
 	}
 

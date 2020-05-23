@@ -27,13 +27,35 @@ import com.sr03.forumdiscussion.model.User;
 @WebServlet("/ForumManager")
 public class ForumManager extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private ForumDAOImpl forumDAO;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
 	public ForumManager() {
 		super();
+		this.forumDAO = new ForumDAOImpl();
 		// TODO Auto-generated constructor stub
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		if (request.getParameter("idDelete") != null) {
+			try {
+				deleteProcess(request, response);
+			} catch (ClassNotFoundException | IOException | SQLException | ServletException e) {
+				e.printStackTrace();
+			}
+		} else {
+
+			processRequest(request, response);
+		}
+
 	}
 
 	/**
@@ -54,8 +76,6 @@ public class ForumManager extends HttpServlet {
 		String description = request.getParameter("Forum description");
 
 		User currentUser = (User) session.getAttribute("user");
-
-		ForumDAOImpl forumDAO = new ForumDAOImpl();
 		Integer newForumId = forumDAO._insert(title, description, currentUser);
 		try {
 			Forum newForum = ForumDAOImpl.FindById(newForumId).get(0);
@@ -70,6 +90,34 @@ public class ForumManager extends HttpServlet {
 			// TODO Auto-generated catch block
 			Logger.getLogger(UserManager.class.getName()).log(Level.SEVERE, null, ex);
 		}
+
+	}
+
+	/**
+	 * Delete a forum for both HTTP <code>POST</code> methods.
+	 *
+	 * @param request  servlet request
+	 * @param response servlet response
+	 * @throws ServletException       if a servlet-specific error occurs
+	 * @throws IOException            if an I/O error occurs
+	 * @throws SQLException
+	 * @throws ClassNotFoundException
+	 */
+	protected void deleteProcess(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException, ClassNotFoundException, SQLException {
+		Integer idForum = Integer.parseInt(request.getParameter("idDelete"));
+		HttpSession session = request.getSession();
+		User currentUser = (User) session.getAttribute("user");
+		Forum forum = ForumDAOImpl.FindById(idForum).get(0);
+		System.out.println("******** id forum to delete : " + idForum + " **********");
+		forumDAO._delete(forum);
+
+		List<Forum> listForums = (ArrayList<Forum>) ForumDAOImpl.FindAll(currentUser);
+		session.setAttribute("listForums", listForums);
+		PrintWriter out = response.getWriter();
+		out.println("<h1> Success: supprimer un forum </h1>");
+		RequestDispatcher rd = request.getRequestDispatcher("affi_list_forum.jsp");
+		rd.include(request, response);
 
 	}
 
@@ -93,15 +141,6 @@ public class ForumManager extends HttpServlet {
 		} catch (SQLException | ClassNotFoundException ex) {
 			Logger.getLogger(ForumManager.class.getName()).log(Level.SEVERE, null, ex);
 		}
-	}
-
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		processRequest(request, response);
 	}
 
 }
