@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author lounis
  */
-public class Message extends ActiveRecordBase{
+public class Message{
 
 	//une clé composite
 	private MessageId messageId;

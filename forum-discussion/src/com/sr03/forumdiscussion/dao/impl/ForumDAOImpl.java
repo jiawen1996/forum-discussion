@@ -19,11 +19,7 @@ import com.sr03.forumdiscussion.model.User;
 public class ForumDAOImpl implements IForumDAO<Forum> {
 	private static SessionFactory factory = new Configuration().configure().buildSessionFactory();
 	private static String _query = "from Forum"; // for findAll static Method
-	
-	
-	
-	
-	
+
 	@Override
 	public Integer _insert(String title, String description, User owner) {
 		// TODO Auto-generated method stub
@@ -56,7 +52,7 @@ public class ForumDAOImpl implements IForumDAO<Forum> {
 		// TODO Auto-generated method stub
 
 	}
-	
+
 	public static List<Forum> FindAll(User owner) throws IOException, ClassNotFoundException, SQLException {
 		Session session = factory.openSession();
 		Transaction tx = null;
@@ -68,6 +64,27 @@ public class ForumDAOImpl implements IForumDAO<Forum> {
 			List<Forum> listForums = query.getResultList();
 			tx.commit();
 			return listForums;
+		} catch (HibernateException e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		return null;
+	}
+
+	public static List<Forum> FindById(Integer id) throws IOException, ClassNotFoundException, SQLException {
+		Session session = factory.openSession();
+		Transaction tx = null;
+		try {
+			tx = session.beginTransaction();
+			String hql = "from Forum where id = ?";
+			Query<Forum> query = session.createQuery(hql, Forum.class);
+			query.setParameter(0, id);
+			List<Forum> res = query.getResultList();
+			tx.commit();
+			return res;
 		} catch (HibernateException e) {
 			if (tx != null)
 				tx.rollback();
