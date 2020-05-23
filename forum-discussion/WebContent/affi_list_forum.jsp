@@ -44,6 +44,12 @@
 						<input type="submit" value="Supprimer">
 					</form>
 				</td>
+				<td>
+					<form action="MessageManager" method="POST">
+						<input type="hidden" name="id" value="${forum.id}">
+						<input type="submit" value="Entrer">
+					</form>
+				</td>
 			</tr>
 
 		</c:forEach>

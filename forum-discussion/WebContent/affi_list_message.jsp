@@ -1,0 +1,55 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Liste message</title>
+</head>
+
+<body>
+    <table class="table table-striped table-hover">
+        <tr class="thead-dark">
+            <th>User</th>
+            <th>Title</th>
+            <th>Description</th>
+
+        </tr>
+        <c:forEach items="${listForums}" var="forum">
+            <tr>
+                <td>
+                    <c:out value="${forum.id}" />
+                </td>
+                <td>
+                    <c:out value="${forum.title}" />
+                </td>
+                <td>
+                    <c:out value="${forum.description}" />
+                </td>
+                <td>
+                    <form action="ForumManager" method="POST">
+                        <input type="hidden" name="idModify" value="${forum.id}">
+                        <input type="submit" value="Modifier">
+                    </form>
+                </td>
+                <td>
+                    <form action="ForumManager" method="POST">
+                        <input type="hidden" name="idDelete" value="${forum.id}">
+                        <input type="submit" value="Supprimer">
+                    </form>
+                </td>
+                <td>
+                    <form action="MessageManager" method="POST">
+                        <input type="hidden" name="id" value="${forum.id}">
+                        <input type="submit" value="Entrer">
+                    </form>
+                </td>
+            </tr>
+
+        </c:forEach>
+    </table>
+</body>
+
+</html>
