@@ -149,7 +149,134 @@ public class UserManager extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		//processRequest(request, response);
+		
+		if (request.getParameter("idModify") != null ) {
+			try {
+				redirectModifyPage(request, response);
+			} catch (ClassNotFoundException | ServletException | IOException | SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		if (request.getParameter("idDelete") != null ) {
+			try {
+				deleteProcess(request, response);
+			} catch (ClassNotFoundException |IOException | SQLException | ServletException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		if (request.getParameter("validModify") != null ) {
+			try {
+				modifyProcess(request, response);
+			} catch (ClassNotFoundException |IOException | SQLException | ServletException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private void modifyProcess(HttpServletRequest request, HttpServletResponse response) 
+			throws ServletException, IOException, ClassNotFoundException, SQLException {
+		HttpSession session = request.getSession();
+		
+		if (session.getAttribute("login") == null 
+				|| !"admin".equalsIgnoreCase((String) session.getAttribute("role"))
+				|| session.getAttribute("modifUser") == null ) {
+			RequestDispatcher rd = request.getRequestDispatcher("echec_login.jsp");
+            rd.forward(request, response);
+		} else {
+			//récupérer des champs depuis la formulaire
+			String firstName = request.getParameter("firstNameModif");
+			String lastName = request.getParameter("lastNameModif");
+			String mail = request.getParameter("loginModif");
+			String gender = request.getParameter("genderModif");
+			String password = request.getParameter("pwdModif");
+			String isAdmin = request.getParameter("isAdminModif");
+			
+			User modifUser = (User) session.getAttribute("modifUser");
+			
+			if ( !firstName.equals("")) {
+				modifUser.setFirstName(firstName);
+			}
+			
+			if ( !lastName.equals("")) {
+				modifUser.setLastName(lastName);
+			}
+			
+			if ( !mail.equals("")) {
+				modifUser.setLogin(mail);
+			}
+			
+			if ( !gender.equals("")) {
+				modifUser.setGender(gender);
+			}
+			
+			if ( !password.equals("")) {
+				modifUser.setPwd(password);
+			}
+			
+			if ( !isAdmin.equals("")) {
+				Byte res = Byte.parseByte(isAdmin);
+				modifUser.setIsAdmin(res);
+			}
+			System.out.println("******** MODIFY *************\n (id : " + modifUser.getId() + "\n lastName : " + modifUser.getLastName()
+								+ "\n firstName : " + modifUser.getFirstName()
+								+ "\n login : " + modifUser.getLogin()
+								+ "\n pwd : " + modifUser.getPwd()
+								+ "\n gender : " + modifUser.getGender() 
+								+ "\n isAdmin : " + modifUser.getIsAdmin() +" **********");
+			
+			UserDAOImpl userDAO = new UserDAOImpl();
+			userDAO._update(modifUser);
+			
+			List<User> listUser = (ArrayList<User>) UserDAOImpl.FindAll();
+			session.setAttribute("listUser", listUser);
+			
+			RequestDispatcher rd = request.getRequestDispatcher("affi_list_util.jsp");
+			rd.include(request, response);
+		}
+		
+	}
+
+	private void deleteProcess(HttpServletRequest request, HttpServletResponse response) 
+			throws ClassNotFoundException, IOException, SQLException, ServletException {
+		Integer idUser = Integer.parseInt(request.getParameter("idDelete"));
+		HttpSession session = request.getSession();
+		
+		if (session.getAttribute("login") == null || !"admin".equalsIgnoreCase((String) session.getAttribute("role"))) {
+			RequestDispatcher rd = request.getRequestDispatcher("echec_login.jsp");
+            rd.forward(request, response);
+		} else {
+			
+			User user = UserDAOImpl.FindById(idUser).get(0);
+			System.out.println("******** id user to delete : " + idUser +" **********");
+			UserDAOImpl userDAO = new UserDAOImpl();
+			userDAO._delete(user);
+			
+			List<User> listUser = (ArrayList<User>)UserDAOImpl.FindAll();
+			session.setAttribute("listUser", listUser);
+			
+			RequestDispatcher rd = request.getRequestDispatcher("affi_list_util.jsp");
+			rd.include(request, response);
+		}
+		
+	}
+
+	private void redirectModifyPage(HttpServletRequest request, HttpServletResponse response) 
+			throws ServletException, IOException, ClassNotFoundException, SQLException {
+		Integer idUser = Integer.parseInt(request.getParameter("idModify"));
+		HttpSession session = request.getSession();
+		RequestDispatcher rd;
+		
+		if (session.getAttribute("login") == null || !"admin".equalsIgnoreCase((String) session.getAttribute("role"))) {
+			rd = request.getRequestDispatcher("echec_login.jsp");
+		} else {
+			User user = UserDAOImpl.FindById(idUser).get(0);
+			session.setAttribute("modifUser", user);
+			rd = request.getRequestDispatcher("modify_util.jsp");
+		}
+		rd.include(request, response);
+		
 	}
 
 	/**

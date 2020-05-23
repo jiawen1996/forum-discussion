@@ -60,6 +60,8 @@ public class Connexion extends HttpServlet {
             }
         } catch (ClassNotFoundException | SQLException ex) {
             Logger.getLogger(Connexion.class.getName()).log(Level.SEVERE, null, ex);
+            RequestDispatcher rd = request.getRequestDispatcher("echec_login.jsp");
+            rd.forward(request, response);
         }
     }
 

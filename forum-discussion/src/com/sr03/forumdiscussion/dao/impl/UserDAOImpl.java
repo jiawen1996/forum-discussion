@@ -47,8 +47,14 @@ public class UserDAOImpl implements IUserDAO<User> {
 		try {
 			tx = session.beginTransaction();
 			int userId = u.getId();
+			
 			User user = (User) session.get(User.class, userId);
 			user.setFirstName(u.getFirstName());
+			user.setLastName(u.getLastName());
+			user.setLogin(u.getLogin());
+			user.setGender(u.getGender());
+			user.setIsAdmin(u.getIsAdmin());
+			
 			session.update(user);
 			tx.commit();
 		} catch (HibernateException e) {
@@ -63,7 +69,23 @@ public class UserDAOImpl implements IUserDAO<User> {
 
 	@Override
 	public void _delete(User u) {
-
+		Session session = factory.openSession();
+		Transaction tx = null;
+		
+		try {
+			tx = session.beginTransaction();
+			int userId = u.getId();
+			User user = (User) session.get(User.class, userId);
+			session.delete(user);
+			tx.commit();
+		} catch (HibernateException e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		return;
 	}
 
 	public static List<User> FindById(Integer id) throws IOException, ClassNotFoundException, SQLException {
