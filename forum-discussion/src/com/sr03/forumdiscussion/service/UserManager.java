@@ -40,70 +40,6 @@ public class UserManager extends HttpServlet {
 
 	}
 
-	public void creerNvUtilsateur() {
-
-	}
-
-	/**
-	 * Processes requests for both HTTP <code>POST</code> methods.
-	 *
-	 * @param request  servlet request
-	 * @param response servlet response
-	 * @throws ServletException if a servlet-specific error occurs
-	 * @throws IOException      if an I/O error occurs
-	 */
-	protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		response.setContentType("text/html;charset=UTF-8");
-		HttpSession session = request.getSession();
-
-		if (session.getAttribute("login") == null || !"admin".equalsIgnoreCase((String) session.getAttribute("role"))) {
-			try (PrintWriter out = response.getWriter()) {
-				/* TODO output your page here. You may use following sample code. */
-				out.println("<!DOCTYPE html>");
-				out.println("<html>");
-				out.println("<head>");
-				out.println("<meta http-equiv='refresh' content='5; URL=connexion.html' />");
-				out.println("<title> Non autorisé</title>");
-				out.println("</head>");
-				out.println("<body>");
-				out.println(
-						"<h1>Vous n'êtes pas connecté ou vous n'êtes pas admin => redirigé vers la page connexion </h1>");
-				out.println("</body>");
-				out.println("</html>");
-			}
-
-		} else {
-			// récupérer des champs depuis la formulaire
-			String firstName = request.getParameter("User first name");
-			String lastName = request.getParameter("User familly name");
-			String mail = request.getParameter("User email");
-			String gender = request.getParameter("gender");
-			String password = request.getParameter("User password");
-			int isAdmin = request.getParameter("admin") != null ? 1 : 0;
-
-			UserDAOImpl userDAO = new UserDAOImpl();
-			Integer newUserId = userDAO._insert(lastName, firstName, mail, (byte) isAdmin, gender, password);
-			User newUser;
-			try {
-				newUser = UserDAOImpl.FindById(newUserId).get(0);
-				response.setContentType("text/html;charset=UTF-8");
-				try (PrintWriter out = response.getWriter()) {
-					out.println("<h1> Un nouveau utilisateur est ajouté : </h1>");
-					out.println(newUser.toString());
-					RequestDispatcher rd = request.getRequestDispatcher("menu.jsp");
-					rd.include(request, response);
-				}
-			} catch (SQLException | ClassNotFoundException ex) {
-				// TODO Auto-generated catch block
-				Logger.getLogger(UserManager.class.getName()).log(Level.SEVERE, null, ex);
-			}
-
-		}
-	}
-
-	// <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the
-	// + sign on the left to edit the code.">
 	/**
 	 * Handles the HTTP <code>GET</code> method.
 	 *
@@ -171,7 +107,47 @@ public class UserManager extends HttpServlet {
 				e.printStackTrace();
 			}
 		}
+		
+		addNewUser(request,response);
 	}
+
+	private void addNewUser(HttpServletRequest request, HttpServletResponse response) 
+			throws IOException, ServletException {
+		response.setContentType("text/html;charset=UTF-8");
+		HttpSession session = request.getSession();
+
+		if (session.getAttribute("login") == null || !"admin".equalsIgnoreCase((String) session.getAttribute("role"))) {
+			RequestDispatcher rd = request.getRequestDispatcher("echec_login.jsp");
+			rd.include(request, response);
+
+		} else {
+			// récupérer des champs depuis la formulaire
+			String firstName = request.getParameter("User first name");
+			String lastName = request.getParameter("User familly name");
+			String login = request.getParameter("User login");
+			String gender = request.getParameter("gender");
+			String password = request.getParameter("User password");
+			int isAdmin = request.getParameter("admin") != null ? 1 : 0;
+
+			UserDAOImpl userDAO = new UserDAOImpl();
+			Integer newUserId = userDAO._insert(lastName, firstName, login, (byte) isAdmin, gender, password);
+			User newUser;
+			try {
+				newUser = UserDAOImpl.FindById(newUserId).get(0);
+				response.setContentType("text/html;charset=UTF-8");
+				try (PrintWriter out = response.getWriter()) {
+					out.println("<h1> Un nouveau utilisateur est ajouté : </h1>");
+					out.println(newUser.toString());
+					RequestDispatcher rd = request.getRequestDispatcher("menu.jsp");
+					rd.include(request, response);
+				}
+			} catch (SQLException | ClassNotFoundException ex) {
+				Logger.getLogger(UserManager.class.getName()).log(Level.SEVERE, null, ex);
+			}
+
+		}
+	}
+
 
 	private void modifyProcess(HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException, ClassNotFoundException, SQLException {
@@ -186,7 +162,7 @@ public class UserManager extends HttpServlet {
 			//récupérer des champs depuis la formulaire
 			String firstName = request.getParameter("firstNameModif");
 			String lastName = request.getParameter("lastNameModif");
-			String mail = request.getParameter("loginModif");
+			String login = request.getParameter("loginModif");
 			String gender = request.getParameter("genderModif");
 			String password = request.getParameter("pwdModif");
 			String isAdmin = request.getParameter("isAdminModif");
@@ -201,8 +177,8 @@ public class UserManager extends HttpServlet {
 				modifUser.setLastName(lastName);
 			}
 			
-			if ( !mail.equals("")) {
-				modifUser.setLogin(mail);
+			if ( !login.equals("")) {
+				modifUser.setLogin(login);
 			}
 			
 			if ( !gender.equals("")) {

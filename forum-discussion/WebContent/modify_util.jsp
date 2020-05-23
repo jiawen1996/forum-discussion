@@ -43,5 +43,7 @@
 		</table>
 		<input type="submit" name="validModify" value="Modifier">
 	</form>
+	<br/>
+		<a href="menu.jsp">Retour vers la page d'administration</a>
 </body>
 </html>

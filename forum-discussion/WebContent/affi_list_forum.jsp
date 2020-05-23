@@ -13,8 +13,8 @@
 </head>
 
 <body>
-
-	<table class="table table-striped table-hover">
+	<h1>List forums</h1>
+	<table class = "table table-striped table-hover">
 		<tr class="thead-dark">
 			<th>User</th>
 			<th>Title</th>
@@ -55,7 +55,8 @@
 		</c:forEach>
 	</table>
 
-
+	<br/>
+	<a href="menu.jsp">Retour vers la page d'administration</a>
 
 
 
