@@ -45,37 +45,24 @@ public class Validation extends HttpServlet {
 
 		HttpSession session = request.getSession();
 		if (session.getAttribute("login") == null || !"admin".equalsIgnoreCase((String) session.getAttribute("role"))) {
-			try (PrintWriter out = response.getWriter()) {
-				/* TODO output your page here. You may use following sample code. */
-				out.println("<!DOCTYPE html>");
-				out.println("<html>");
-				out.println("<head>");
-				out.println("<meta http-equiv='refresh' content='5; URL=connexion.html' />");
-				out.println("<title> Non autorisé</title>");
-				out.println("</head>");
-				out.println("<body>");
-				out.println(
-						"<h1>Vous n'êtes pas connecté ou vous n'êtes pas admin => redirigé vers la page connexion </h1>");
-				out.println("</body>");
-				out.println("</html>");
-
-			}
+			RequestDispatcher rd = request.getRequestDispatcher("echec_login.jsp");
+            rd.forward(request, response);
 
 		} else {
 			try {
 				String firstName = request.getParameter("User first name");
 				String lastName = request.getParameter("User familly name");
-				String mail = request.getParameter("User email");
+				String login = request.getParameter("User login");
 				String gender = request.getParameter("gender");
 				String password = request.getParameter("User password");
 
 				//vérifier des champs vides
-				if (firstName == null || lastName == null || mail == null || password == null) {
+				if (firstName == null || lastName == null || login == null || password == null) {
 					System.out.println("Champs non renseignés");
 					RequestDispatcher rd = request.getRequestDispatcher("ajouter_nv_util.jsp");
 					rd.include(request, response);
 					valid = false;
-				} else if ("".equals(firstName) || "".equals(lastName) || "".equals(mail) || "".equals(password)) {
+				} else if ("".equals(firstName) || "".equals(lastName) || "".equals(login) || "".equals(password)) {
 					System.out.println("Champs vides");
 					RequestDispatcher rd = request.getRequestDispatcher("ajouter_nv_util.jsp");
 					rd.include(request, response);
@@ -106,7 +93,7 @@ public class Validation extends HttpServlet {
 						out.println("Nom <input type='radio' name='valider' value='nom' />");
 						out.println("<input type='hidden' name='User first name' value='" + firstName + "'/>");
 						out.println("<input type='hidden' name='User familly name' value='" + lastName + "'/>");
-						out.println("<input type='hidden' name='User email' value='" + mail + "'/>");
+						out.println("<input type='hidden' name='User login' value='" + login + "'/>");
 						out.println("<input type='hidden' name='gender' value='" + gender + "'/>");
 						out.println("<input type='hidden' name='User password' value='" + password + "' />");
 						out.println("<br>");
@@ -119,8 +106,16 @@ public class Validation extends HttpServlet {
 
 				}
 				if (valid) {
+					request.setAttribute("addNewUser", "true");
 					RequestDispatcher rd = request.getRequestDispatcher("UserManager");
 					rd.forward(request, response);
+				} else {
+					try (PrintWriter out = response.getWriter()) {
+						out.println("Impossible d'ajouter l'utilisateur ! ");
+						RequestDispatcher rd=request.getRequestDispatcher("ajouter_nv_util.jsp");  
+				        rd.include(request, response); 
+						
+					}
 				}
 			} catch (ClassNotFoundException ex) {
 				Logger.getLogger(Validation.class.getName()).log(Level.SEVERE, null, ex);
