@@ -133,7 +133,7 @@ public class ForumManager extends HttpServlet {
 			User currentUser = (User) session.getAttribute("user");
 			List<Forum> listForums = (ArrayList<Forum>) ForumDAOImpl.FindAll(currentUser);
 			try (PrintWriter out = response.getWriter()) {
-				/* TODO output your page here. You may use following sample code. */
+
 				session.setAttribute("listForums", listForums);
 				RequestDispatcher rd = request.getRequestDispatcher("affi_list_forum.jsp");
 				rd.forward(request, response);

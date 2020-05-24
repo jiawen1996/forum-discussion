@@ -1,8 +1,11 @@
 package com.sr03.forumdiscussion.dao;
 
+import java.util.List;
+
 public interface IUserDAO<User> {
 
-	public Integer _insert(String lastName, String firstName, String login, Byte isAdmin, String gender, String password);
+	public Integer _insert(String lastName, String firstName, String login, Byte isAdmin, String gender,
+			String password);
 
 	public void _update(User u);
 

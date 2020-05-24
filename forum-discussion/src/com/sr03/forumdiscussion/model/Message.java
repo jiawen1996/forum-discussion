@@ -36,7 +36,7 @@ public class Message {
         this.content = contenu;
         this.datePublication = new Date();
         this.editor = editeur;
-        this.messageId = new MessageId()
+        this.destination = destination;
     }
 
     public Forum getDestination() {

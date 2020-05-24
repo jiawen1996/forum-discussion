@@ -15,8 +15,8 @@
 			This class contains the user detail.
 		</meta>
 		<composite-id name="messageId" class="MessageId">
-			<key-property name="id"></key-property>
-			<key-property name="destinationId"></key-property>
+			<key-property name="id" column="id"></key-property>
+			<key-property name="destinationId" column="destination"></key-property>
 		</composite-id>
 
 		<property name="content" column="content" type="string" />

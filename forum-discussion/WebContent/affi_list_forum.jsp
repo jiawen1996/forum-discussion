@@ -14,7 +14,7 @@
 
 <body>
 	<h1>List forums</h1>
-	<table class = "table table-striped table-hover">
+	<table class="table table-striped table-hover">
 		<tr class="thead-dark">
 			<th>User</th>
 			<th>Title</th>
@@ -45,8 +45,8 @@
 					</form>
 				</td>
 				<td>
-					<form action="MessageManager" method="POST">
-						<input type="hidden" name="id" value="${forum.id}">
+					<form action="MessageManager" method="GET">
+						<input type="hidden" name="idForum" value="${forum.id}">
 						<input type="submit" value="Entrer">
 					</form>
 				</td>
@@ -55,7 +55,7 @@
 		</c:forEach>
 	</table>
 
-	<br/>
+	<br />
 	<a href="menu.jsp">Retour vers la page d'administration</a>
 
 
