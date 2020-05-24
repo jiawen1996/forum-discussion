@@ -121,7 +121,6 @@ public class User {
 		this.forumSubscriptions = forumSubscriptions;
 	}
 
-
 	@Override
 	public int hashCode() {
 		int hash = 3;
@@ -153,8 +152,7 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User{" + "lastName=" + lastName + ", firstName=" + firstName + "" + ", login=" + login + ", gender="
-				+ gender + "," + " pwd=" + pwd + '}';
+		return "" + lastName + " " + firstName;
 	}
 
 	public Set<Message> getMessages() {
@@ -164,7 +162,5 @@ public class User {
 	public void setMessages(Set<Message> messages) {
 		this.messages = messages;
 	}
-
-
 
 }

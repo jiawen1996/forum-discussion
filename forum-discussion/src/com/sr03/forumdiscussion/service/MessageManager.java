@@ -43,16 +43,15 @@ public class MessageManager extends HttpServlet {
             Integer idForum = Integer.parseInt(request.getParameter("idForum"));
             Forum currentForum = ForumDAOImpl.FindById(idForum).get(0);
             List<Message> listMessages = (ArrayList<Message>) MessageDAOImpl.FindAllByForum(currentForum);
+            System.out.println(listMessages.get(0));
             try (PrintWriter out = response.getWriter()) {
+                session.setAttribute("listMessages", listMessages);
+                RequestDispatcher rd = request.getRequestDispatcher("affi_list_message.jsp");
+                rd.forward(request, response);
+            }
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(ForumManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
-				session.setAttribute("listMessages", listMessages);
-				RequestDispatcher rd = request.getRequestDispatcher("affi_list_message.jsp");
-				rd.forward(request, response);
-			}
-		} catch (SQLException | ClassNotFoundException ex) {
-			Logger.getLogger(ForumManager.class.getName()).log(Level.SEVERE, null, ex);
-		}
-	}
-        
-    
 }

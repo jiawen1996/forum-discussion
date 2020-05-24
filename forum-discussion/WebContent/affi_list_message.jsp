@@ -17,34 +17,13 @@
             <th>Description</th>
 
         </tr>
-        <c:forEach items="${listForums}" var="forum">
+        <c:forEach items="${listMessages}" var="message">
             <tr>
                 <td>
-                    <c:out value="${forum.id}" />
+                    <c:out value="${message.editor}" />
                 </td>
                 <td>
-                    <c:out value="${forum.title}" />
-                </td>
-                <td>
-                    <c:out value="${forum.description}" />
-                </td>
-                <td>
-                    <form action="ForumManager" method="POST">
-                        <input type="hidden" name="idModify" value="${forum.id}">
-                        <input type="submit" value="Modifier">
-                    </form>
-                </td>
-                <td>
-                    <form action="ForumManager" method="POST">
-                        <input type="hidden" name="idDelete" value="${forum.id}">
-                        <input type="submit" value="Supprimer">
-                    </form>
-                </td>
-                <td>
-                    <form action="MessageManager" method="POST">
-                        <input type="hidden" name="id" value="${forum.id}">
-                        <input type="submit" value="Entrer">
-                    </form>
+                    <c:out value="${message.content}" />
                 </td>
             </tr>
 

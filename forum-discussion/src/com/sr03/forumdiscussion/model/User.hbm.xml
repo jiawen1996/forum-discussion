@@ -9,7 +9,7 @@
 <hibernate-mapping
 	package="com.sr03.forumdiscussion.model">
 
-	<class name="User" lazy="true" table="db_sr03.user">
+	<class name="User" lazy="false" table="db_sr03.user">
 
 		<meta attribute="class-description">
 			This class contains the user detail.

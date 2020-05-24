@@ -9,7 +9,7 @@
 <hibernate-mapping
 	package="com.sr03.forumdiscussion.model">
 
-	<class name="Forum" lazy="true" table="db_sr03.forum">
+	<class name="Forum" lazy="false" table="db_sr03.forum">
 
 		<meta attribute="class-description">
 			This class contains the forum detail.
