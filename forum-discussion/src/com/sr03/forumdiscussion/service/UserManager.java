@@ -168,6 +168,7 @@ public class UserManager extends HttpServlet {
 			String isAdmin = request.getParameter("isAdminModif");
 			
 			User modifUser = (User) session.getAttribute("modifUser");
+			session.removeAttribute("modifUser");
 			
 			if ( !firstName.equals("")) {
 				modifUser.setFirstName(firstName);
