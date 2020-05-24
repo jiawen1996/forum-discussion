@@ -9,6 +9,10 @@
 </head>
 
 <body>
+	<% 
+		String role = session.getAttribute("role").toString();
+		if ("admin".equalsIgnoreCase(role)) {
+	%>
     <form action="ForumManager" method="post">
         <label> Title </label>
         <input type="text" id="title" name="Forum title" required/>
@@ -20,7 +24,16 @@
         <input type="submit" value="Submit">
     </form>
     <br/>
-	<a href="menu.jsp">Retour vers la page d'administration</a>
+	<a href="menu.jsp">Menu administrateur</a>
+	<%
+		} else {
+	%>
+	<h1>Erreur</h1>
+	<p> Vous n'avez pas droit à accéder à cette page. Veullez revenir vers l'accueil !</p>
+	<a href='home.jsp'>Accueil</a>
+	<%
+		}
+	%>
 </body>
 
 </html>

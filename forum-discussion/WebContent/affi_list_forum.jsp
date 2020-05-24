@@ -56,9 +56,7 @@
 	</table>
 
 	<br />
-	<a href="menu.jsp">Retour vers la page d'administration</a>
-
-
+	<a href="home.jsp">Accueil</a>
 
 </body>
 

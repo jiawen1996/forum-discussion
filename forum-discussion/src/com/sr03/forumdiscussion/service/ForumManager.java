@@ -44,7 +44,23 @@ public class ForumManager extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
+		
+		if (request.getParameter("idModify") != null ) {
+			try {
+				redirectModifyPage(request, response);
+			} catch (ClassNotFoundException | ServletException | IOException | SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		if (request.getParameter("validModify") != null ) {
+			try {
+				modifyProcess(request, response);
+			} catch (ClassNotFoundException |IOException | SQLException | ServletException e) {
+				e.printStackTrace();
+			}
+		}
+		
 		if (request.getParameter("idDelete") != null) {
 			try {
 				deleteProcess(request, response);
@@ -53,9 +69,87 @@ public class ForumManager extends HttpServlet {
 			}
 		} else {
 
-			processRequest(request, response);
+			//processRequest(request, response);
 		}
 
+	}
+
+	private void modifyProcess(HttpServletRequest request, HttpServletResponse response) 
+			throws ServletException, IOException, ClassNotFoundException, SQLException {
+		HttpSession session = request.getSession();
+		
+		if (session.getAttribute("login") == null 
+				|| !"admin".equalsIgnoreCase((String) session.getAttribute("role"))
+				|| session.getAttribute("editForum") == null ) {
+			RequestDispatcher rd = request.getRequestDispatcher("echec_login.jsp");
+            rd.forward(request, response);
+		} else {
+			//récupérer des champs depuis la formulaire
+			String title = request.getParameter("Forum title");
+			String description = request.getParameter("Forum description");
+			String firstName = request.getParameter("Forum owner first name");
+			String lastName = request.getParameter("Forum owner last name");
+			
+			Forum editForum = (Forum) session.getAttribute("editForum");
+			User oldOwner = editForum.getOwner();
+			
+			// Check owner
+			if ( !(firstName.equals("") && lastName.equals(""))) {
+				User newOwner = UserDAOImpl.FindByLastAndFirstName(firstName, lastName).get(0);
+				
+				if (newOwner != null) {
+					editForum.setOwner(newOwner);
+				}
+			}
+			
+			if ( !title.equals("")) {
+				editForum.setTitle(title);
+			}
+			
+			if ( !description.equals("")) {
+				editForum.setDescription(description);
+			}
+			
+			session.removeAttribute("editForum");
+			session.removeAttribute("owner");
+			System.out.println("******** MODIFY FORUM *************\n (id : " + editForum.getId()
+								+ "\n title : " + editForum.getTitle()
+								+ "\n description : " + editForum.getDescription()
+								+ "\n owner : " + editForum.getOwner().getLogin()
+								+ "\\n **********");
+			
+			ForumDAOImpl forumDAO = new ForumDAOImpl();
+			forumDAO._update(editForum);
+			
+			List<Forum> listForums = (ArrayList<Forum>) ForumDAOImpl.FindAll(editForum.getOwner());
+			session.setAttribute("listForums", listForums);
+			
+			RequestDispatcher rd = request.getRequestDispatcher("affi_list_forum.jsp");
+			rd.include(request, response);
+		}
+			
+		
+	}
+
+	private void redirectModifyPage(HttpServletRequest request, HttpServletResponse response) throws ClassNotFoundException, IOException, SQLException, ServletException {
+		Integer idForum = Integer.parseInt(request.getParameter("idModify"));
+		System.out.println("****** ID FORUM TO MODIFY : " + idForum);
+		HttpSession session = request.getSession();
+		RequestDispatcher rd;
+		
+		if (session.getAttribute("login") == null || !"admin".equalsIgnoreCase((String) session.getAttribute("role"))) {
+			rd = request.getRequestDispatcher("echec_login.jsp");
+		} else {
+			Forum forum = ForumDAOImpl.FindById(idForum).get(0);
+			User owner = UserDAOImpl.FindById(forum.getOwner().getId()).get(0);
+			
+			session.setAttribute("editForum", forum);
+			session.setAttribute("owner", owner);
+			
+			rd = request.getRequestDispatcher("modify_forum.jsp");
+		}
+		rd.include(request, response);
+		
 	}
 
 	/**
@@ -114,6 +208,7 @@ public class ForumManager extends HttpServlet {
 
 		List<Forum> listForums = (ArrayList<Forum>) ForumDAOImpl.FindAll(currentUser);
 		session.setAttribute("listForums", listForums);
+		
 		PrintWriter out = response.getWriter();
 		out.println("<h1> Success: supprimer un forum </h1>");
 		RequestDispatcher rd = request.getRequestDispatcher("affi_list_forum.jsp");
