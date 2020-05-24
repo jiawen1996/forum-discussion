@@ -9,6 +9,10 @@
 <title>Modifier l'information d'un utilisateur</title>
 </head>
 <body>
+	<% 
+		String role = session.getAttribute("role").toString();
+		if ("admin".equalsIgnoreCase(role)) {
+	%>
 	<h1>Modifier l'information d'un utilisateur</h1>
 	<form action="UserManager" method="POST">
 		<table>
@@ -44,6 +48,15 @@
 		<input type="submit" name="validModify" value="Modifier">
 	</form>
 	<br/>
-		<a href="menu.jsp">Retour vers la page d'administration</a>
+		<a href="menu.jsp">Menu administrateur</a>
+		<%
+		} else {
+	%>
+	<h1>Erreur</h1>
+	<p> Vous n'avez pas droit à accéder à cette page. Veullez revenir vers l'accueil !</p>
+	<a href='home.jsp'>Accueil</a>
+	<%
+		}
+	%>
 </body>
 </html>

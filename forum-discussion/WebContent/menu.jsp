@@ -6,7 +6,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Navigation Administrateur</title>
+<title>Menu administrateur</title>
 </head>
 <body>
 	<% 
@@ -15,31 +15,26 @@
 		session.setAttribute("role", role);
 		if ("admin".equalsIgnoreCase(role)) {
 	%>
-	<h1>Hello <%=session.getAttribute("login") %></h1>
+	<h1>Menu administrateur</h1>
+	<h3> Hello <%=session.getAttribute("login") %></h3>
 	<nav>
 		<ul>
-			<li>Connected</li>
 			<li><a href='ajouter_nv_util.jsp'>Créer un nouveau
 				utilisateur</a></li>
 			<li><a href='UserManager'>Afficher la liste des utilisateurs</a></li>
 			<li><a href='ajouter_nv_forum.jsp'>Créer un nouveau
 				forum</a></li>
 			<li><a href='ForumManager'>Afficher la liste des forum</a></li>
-			<li><a href='Deconnexion'>Déconnecter</a></li>
+			<li><a href='home.jsp'>Accueil</a></li>
 		</ul>
 	</nav>
 
 	<%
 		} else {
 	%>
-	<h1>Succes : utilisateur non admin.</h1>
-	<nav>
-		<ul>
-			<li><a href='ajouter_nv_forum.jsp'>Créer un nouveau
-				forum</a></li>
-			<li><a href='ForumManager'>Afficher la liste des forum</a></li>
-		</ul>
-	</nav>
+	<h1>Erreur</h1>
+	<p> Vous n'avez pas droit à accéder à cette page. Veullez revenir vers l'accueil !</p>
+	<a href='home.jsp'>Accueil</a>
 	<%
 		}
 	%>

@@ -54,7 +54,7 @@ public class Connexion extends HttpServlet {
             } else {
             	HttpSession session = request.getSession();
             	session.setAttribute("user", u);
-            	RequestDispatcher rd = request.getRequestDispatcher("menu.jsp");
+            	RequestDispatcher rd = request.getRequestDispatcher("home.jsp");
             	rd.forward(request, response);
 
             }

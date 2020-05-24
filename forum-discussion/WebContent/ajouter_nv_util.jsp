@@ -9,6 +9,10 @@
 <title>Ajouter un nouveau utilisateur</title>
 </head>
 <body>
+	<% 
+		String role = session.getAttribute("role").toString();
+		if ("admin".equalsIgnoreCase(role)) {
+	%>
 	<h1>Ajouter un nouveau utilisateur</h1>
 	<form action="Validation" method="post">
            <label> First name </label>
@@ -36,6 +40,15 @@
            <input type="submit" value="Submit">  
        </form>
        <br/>
-		<a href="menu.jsp">Retour vers la page d'administration</a>
+		<a href="menu.jsp">Menu administrateur</a>
+	<%
+		} else {
+	%>
+	<h1>Erreur</h1>
+	<p> Vous n'avez pas droit à accéder à cette page. Veullez revenir vers l'accueil !</p>
+	<a href='home.jsp'>Accueil</a>
+	<%
+		}
+	%>
 </body>
 </html>

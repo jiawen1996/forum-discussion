@@ -9,6 +9,10 @@
 <title>List users</title>
 </head>
 <body>
+	<% 
+		String role = session.getAttribute("role").toString();
+		if ("admin".equalsIgnoreCase(role)) {
+	%>
 	<h1>Liste des utilisateurs</h1>
 	<table>
 		<tr>
@@ -41,6 +45,15 @@
 		</c:forEach>
 	</table>
 	<br/>
-	<a href="menu.jsp">Retour vers la page d'administration</a>
+	<a href="menu.jsp">Menu administrateur</a>
+	<%
+		} else {
+	%>
+	<h1>Erreur</h1>
+	<p> Vous n'avez pas droit à accéder à cette page. Veullez revenir vers l'accueil !</p>
+	<a href='home.jsp'>Accueil</a>
+	<%
+		}
+	%>
 </body>
 </html>
