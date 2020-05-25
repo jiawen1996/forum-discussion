@@ -269,7 +269,7 @@ public class ForumManager extends HttpServlet {
 			HttpSession session = request.getSession();
 			List<Forum> listForums = (ArrayList<Forum>) ForumDAOImpl.FindAll();
 
-			if (request.getParameter("idForum") != null) {
+			if (request.getParameter("idEnterForum") != null) {
 
 				try {
 					userSubscription(request, response);

@@ -95,8 +95,29 @@ public class ForumDAOImpl implements IForumDAO<Forum> {
 		Transaction tx = null;
 		try {
 			tx = session.beginTransaction();
-			String hql = "from Forum";
-			Query query = session.createQuery(hql, Forum.class);
+			String hql = _query;
+			Query<Forum> query = session.createQuery(hql, Forum.class);
+			List<Forum> listForums = query.getResultList();
+			tx.commit();
+			return listForums;
+		} catch (HibernateException e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		return null;
+	}
+	
+	public static List<Forum> FindByOwner(User owner) throws IOException, ClassNotFoundException, SQLException {
+		Session session = factory.openSession();
+		Transaction tx = null;
+		try {
+			tx = session.beginTransaction();
+			String hql = "from Forum where owner = ?";
+			Query<Forum> query = session.createQuery(hql, Forum.class);
+			query.setParameter(0, owner);
 			List<Forum> listForums = query.getResultList();
 			tx.commit();
 			return listForums;
