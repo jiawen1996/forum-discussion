@@ -20,19 +20,16 @@
 		<property name="title" column="title" type="string" />
 		<property name="description" column="description"
 			type="string" />
-			
-		<many-to-one name="owner" class="User" column="owner"  />
-		<!-- <component name="message" class="Message">
-			<set cascade="save-update" name="messages"
-				table="db_sr03.message">
-				la clé étrangère de la table message est destination
-				<key column="destination"></key>
-				<one-to-many class="Message"></one-to-many>
-			</set>
-		</component> -->
-		
+
+		<many-to-one name="owner" class="User" column="owner" />
+		<!-- <component name="message" class="Message"> <set cascade="save-update" 
+			name="messages" table="db_sr03.message"> la clé étrangère de la table message 
+			est destination <key column="destination"></key> <one-to-many class="Message"></one-to-many> 
+			</set> </component> -->
+
 		<!-- mapping de type many to many -->
-		<set cascade="all" name="users" table="db_sr03.subscriptions">
+		<set cascade="save-update" name="users" table="db_sr03.subscriptions"
+			inverse="true" lazy="true" fetch="select">
 			<!-- la clé étrangère de la table Subscriptions est id_user -->
 			<key column="id_forum"></key>
 			<many-to-many column="id_user" class="User" />

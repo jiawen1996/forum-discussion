@@ -85,7 +85,6 @@ public class Validation extends HttpServlet {
 				} else if (UserDAOImpl.FindByLastAndFirstName(firstName, lastName).size() != 0) {
 					valid = false;
 					try (PrintWriter out = response.getWriter()) {
-						/* TODO output your page here. You may use following sample code. */
 						out.println(
 								"<h1>Un utilisateur avec les mêmes nom et prénom existe déjà. Voulez-vous l'enregistrer ?  </h1>");
 						out.println("<form method='POST' action='Validation'>");

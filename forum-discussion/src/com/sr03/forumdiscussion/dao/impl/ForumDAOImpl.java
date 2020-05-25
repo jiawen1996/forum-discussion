@@ -49,12 +49,12 @@ public class ForumDAOImpl implements IForumDAO<Forum> {
 		try {
 			tx = session.beginTransaction();
 			int forumId = f.getId();
-			
+
 			Forum forum = (Forum) session.get(Forum.class, forumId);
 			forum.setTitle(f.getTitle());
 			forum.setDescription(f.getDescription());
 			forum.setOwner(f.getOwner());
-			
+
 			session.update(forum);
 			tx.commit();
 		} catch (HibernateException e) {
@@ -131,7 +131,7 @@ public class ForumDAOImpl implements IForumDAO<Forum> {
 		}
 		return null;
 	}
-	
+
 	public List<User> getListUsers(Integer id) {
 		Session session = factory.openSession();
 		Transaction tx = null;
@@ -152,22 +152,18 @@ public class ForumDAOImpl implements IForumDAO<Forum> {
 		}
 		return null;
 	}
-	
-	public boolean updateUsers(Forum f) {
+
+	public boolean updateUsers(Integer idForum, Integer idUser) {
 		Session session = factory.openSession();
 		Transaction tx = null;
-		int forumId = f.getId();
-		Set<User> users = f.getUsers();
-		
-		Forum forum = (Forum) session.get(Forum.class, forumId);
-		
+
 		try {
+			
 			tx = session.beginTransaction();
-			String hql = "UPDATE Forum set users = ? WHERE id = ?";
-			Query query = session.createQuery(hql);
-			query.setParameter(0, users);
-			query.setParameter(1, forumId);
-			int result = query.executeUpdate();
+			Forum forum = (Forum)session.load(Forum.class, idForum); 
+			User user = (User)session.load(User.class, idUser);
+			forum.getUsers().add(user);
+			session.save(forum);
 			tx.commit();
 			return true;
 		} catch (HibernateException e) {

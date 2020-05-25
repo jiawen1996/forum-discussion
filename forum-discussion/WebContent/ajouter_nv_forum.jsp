@@ -20,7 +20,7 @@
         <label> Description </label>
         <input type="text" id="description" name="Forum description" />
         <br>
-        <!-- <input type="hidden" name="idDelete" value="${user.id}"> -->
+        <input type="hidden" name="idCreate" value="${user.id}">
         <input type="submit" value="Submit">
     </form>
     <br/>

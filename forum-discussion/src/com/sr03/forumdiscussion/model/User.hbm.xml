@@ -31,9 +31,11 @@
 			<key column="editor"></key>
 			<one-to-many class="Message" />
 		</set>
-		
+
 		<!-- mapping de type many to many -->
-		<set cascade="all" name="forumSubscriptions" table="db_sr03.subscriptions">
+		<set cascade="all" name="forumSubscriptions"
+			table="db_sr03.subscriptions" inverse="false" lazy="true"
+			fetch="select">
 			<!-- la clé étrangère de la table Subscriptions est id_user -->
 			<key column="id_user"></key>
 			<many-to-many column="id_forum" class="Forum" />
