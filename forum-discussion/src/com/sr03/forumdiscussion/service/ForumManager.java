@@ -18,8 +18,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.sr03.forumdiscussion.dao.impl.ForumDAOImpl;
+import com.sr03.forumdiscussion.dao.impl.MessageDAOImpl;
 import com.sr03.forumdiscussion.dao.impl.UserDAOImpl;
 import com.sr03.forumdiscussion.model.Forum;
+import com.sr03.forumdiscussion.model.Message;
 import com.sr03.forumdiscussion.model.User;
 
 /**
@@ -93,17 +95,19 @@ public class ForumManager extends HttpServlet {
 			Integer idUser = user.getId();
 			// Si l'utilisateur ne s'est pas enregistré dans ce forum
 			boolean res = forumDAO.updateUsers(idForum, idUser);
-			System.out.println("---------------------init");
 
 			if (res) {
-//					session.setAttribute("forum",forum);
-//					session.setAttribute("usersForum",listUser);
-					rd = request.getRequestDispatcher("forum.jsp");
-				} else {
-					
-					
-					rd = request.getRequestDispatcher("erreur.jsp");
-				}
+				Forum currentForum = ForumDAOImpl.FindById(idForum).get(0);
+				List<Message> listMessages = (ArrayList<Message>) MessageDAOImpl.FindAllByForum(currentForum);
+				
+				session.setAttribute("forum", currentForum);
+				session.setAttribute("listMessages", listMessages);
+
+				rd = request.getRequestDispatcher("forum.jsp");
+			} else {
+
+				rd = request.getRequestDispatcher("erreur.jsp");
+			}
 		}
 		rd.include(request, response);
 

@@ -19,13 +19,17 @@ public class MessageDAOImpl implements IMessageDAO<Message> {
 	private static String _query = "from Forum"; // for findAll static Method
 
 	@Override
-	public MessageId _insert(String content, User editor, Forum destination) {
+	public MessageId _insert(String content, Integer idUser, Integer idForum) {
 		Session session = factory.openSession();
 		Transaction tx = null;
 		MessageId messageId = null;
 		try {
 			tx = session.beginTransaction();
-			Message newMesaage = new Message(content, editor, destination);
+			User user = session.load(User.class, idUser);
+			Forum forum = session.load(Forum.class, idForum);
+			Message newMesaage = new Message(content, user, forum);
+			MessageId id = new MessageId(idForum);
+			newMesaage.setMessageId(id);
 			messageId = (MessageId) session.save(newMesaage);
 			tx.commit();
 		} catch (HibernateException e) {

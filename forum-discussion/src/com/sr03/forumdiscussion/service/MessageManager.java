@@ -22,36 +22,82 @@ import com.sr03.forumdiscussion.model.*;
  */
 @WebServlet("/MessageManager")
 public class MessageManager extends HttpServlet {
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
+	private MessageDAOImpl messageDAO;
 
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public MessageManager() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
+	/**
+	 * @see HttpServlet#HttpServlet()
+	 */
+	public MessageManager() {
+		super();
+		this.messageDAO = new MessageDAOImpl();
+	}
 
-    /**
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-     *      response)
-     */
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        try {
-            HttpSession session = request.getSession();
-            Integer idForum = Integer.parseInt(request.getParameter("idForum"));
-            Forum currentForum = ForumDAOImpl.FindById(idForum).get(0);
-            List<Message> listMessages = (ArrayList<Message>) MessageDAOImpl.FindAllByForum(currentForum);
-            System.out.println(listMessages.get(0));
-            try (PrintWriter out = response.getWriter()) {
-                session.setAttribute("listMessages", listMessages);
-                RequestDispatcher rd = request.getRequestDispatcher("affi_list_message.jsp");
-                rd.forward(request, response);
-            }
-        } catch (SQLException | ClassNotFoundException ex) {
-            Logger.getLogger(ForumManager.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
+	/**
+	 * Processes requests for both HTTP <code>POST</code> methods.
+	 *
+	 * @param request  servlet request
+	 * @param response servlet response
+	 * @throws ServletException if a servlet-specific error occurs
+	 * @throws IOException      if an I/O error occurs
+	 */
+	protected void createProcess(HttpServletRequest request, HttpServletResponse response)
+			throws ClassNotFoundException, ServletException, IOException, SQLException {
+		response.setContentType("text/html;charset=UTF-8");
+		HttpSession session = request.getSession();
+
+		if (session.getAttribute("login") == null) {
+			RequestDispatcher rd = request.getRequestDispatcher("echec_login.jsp");
+			rd.forward(request, response);
+
+		} else {
+			// récupérer des champs depuis la formulaire
+			String content = request.getParameter("Message content");
+			User currentUser = (User) session.getAttribute("user");
+			Integer idUser = currentUser.getId();
+			Forum currentForum = (Forum) session.getAttribute("forum");
+			Integer idForum = currentForum.getId();
+			MessageId newMessage = messageDAO._insert(content, idUser, idForum);
+
+			response.setContentType("text/html;charset=UTF-8");
+			try (PrintWriter out = response.getWriter()) {
+				out.println("<h1> Un nouveau message est ajouté : </h1>");
+				RequestDispatcher rd = request.getRequestDispatcher("forum.jsp");
+				rd.include(request, response);
+			}
+
+		}
+
+	}
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+//	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+//			throws ServletException, IOException {
+//		try {
+//
+//		} catch (SQLException | ClassNotFoundException ex) {
+//			Logger.getLogger(ForumManager.class.getName()).log(Level.SEVERE, null, ex);
+//		}
+//	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		if (request.getParameter("envoyerMessage") != null) {
+			try {
+				createProcess(request, response);
+			} catch (ClassNotFoundException | IOException | SQLException | ServletException e) {
+				e.printStackTrace();
+			}
+		}
+
+	}
 
 }

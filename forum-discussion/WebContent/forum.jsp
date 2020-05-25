@@ -1,47 +1,34 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-
 <!DOCTYPE html>
 <html>
+
 <head>
 <meta charset="UTF-8">
-<title>Forum ${forum.title}</title>
+<title>Liste message</title>
 </head>
+
 <body>
-	<h1>Forum ${forum.title}</h1>
-	<h3><b>Liste des utilisateurs</b></h3>
-	<table>
-		<tr>
-			<th>ID</th>
-			<th>Nom & Prenom</th>
-			<th>Genre</th>
-			<th>Login</th>
-			<th>Admin</th>
+	<table class="table table-striped table-hover">
+		<tr class="thead-dark">
+			<th>User</th>
+			<th>Content</th>
+
 		</tr>
-		<c:forEach items="${usersForum}" var="user">
+		<c:forEach items="${listMessages}" var="message">
 			<tr>
-				<td><c:out value="${user.id}" /></td>
-				<td><c:out value="${user.lastName}"/> <c:out value="${user.firstName}"/></td>
-				<td><c:out value="${user.gender}" /></td>
-				<td><c:out value="${user.login}" /></td>
-				<td><c:out value="${user.isAdmin}" /></td>
-				<td>
-					<form action="UserManager" method="POST">
-						<input type="hidden" name="idModify" value="${user.id}">
-						<input type="submit" value="Modifier">
-					</form>
-				</td>
-				<td>
-					<form action="UserManager" method="POST">
-						<input type="hidden" name="idDelete" value="${user.id}">
-						<input type="submit" value="Supprimer">
-					</form>
-				</td>
+				<td><c:out value="${message.editor}" /></td>
+				<td><c:out value="${message.content}" /></td>
 			</tr>
 		</c:forEach>
 	</table>
-	<br/>
-	<a href="home.jsp">Accueil</a>
+	<form action="MessageManager" method="post">
+		<label> Content </label> 
+		<input type="text" id="content" name="Message content" style="width:200px; height:20px;" /> <br> 
+		<input type="hidden" name="envoyerMessage" value="message"> 
+		<input type="submit" value="Envoyer">
+	</form>
 </body>
+
 </html>

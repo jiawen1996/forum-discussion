@@ -10,8 +10,7 @@ public class MessageId implements Serializable {
 
 	}
 
-	public MessageId(int id, int destinationId) {
-		this.id = id;
+	public MessageId(int destinationId) {
 		this.destinationId = destinationId;
 	}
 

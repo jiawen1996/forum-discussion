@@ -37,6 +37,7 @@ public class Message {
         this.datePublication = new Date();
         this.editor = editeur;
         this.destination = destination;
+        
     }
 
     public Forum getDestination() {
