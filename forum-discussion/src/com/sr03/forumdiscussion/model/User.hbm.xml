@@ -34,7 +34,7 @@
 
 		<!-- mapping de type many to many -->
 		<set cascade="all" name="forumSubscriptions"
-			table="db_sr03.subscriptions" inverse="false" lazy="true"
+			table="db_sr03.subscriptions" inverse="true" lazy="true"
 			fetch="select">
 			<!-- la clé étrangère de la table Subscriptions est id_user -->
 			<key column="id_user"></key>
