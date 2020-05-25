@@ -85,7 +85,7 @@ public class ForumManager extends HttpServlet {
 			throws ClassNotFoundException, IOException, SQLException, ServletException {
 		HttpSession session = request.getSession();
 		RequestDispatcher rd = null;
-		Integer idForum = Integer.parseInt(request.getParameter("idForum"));
+		Integer idForum = Integer.parseInt(request.getParameter("idEnterForum"));
 		System.out.println("****** ID FORUM TO ENTER : " + idForum);
 
 		if (session.getAttribute("login") == null) {
@@ -250,12 +250,12 @@ public class ForumManager extends HttpServlet {
 
 		List<Forum> listForums = (ArrayList<Forum>) ForumDAOImpl.FindAll();
 		session.setAttribute("listForums", listForums);
-
-		PrintWriter out = response.getWriter();
-		out.println("<h1> Success: supprimer un forum </h1>");
-		RequestDispatcher rd = request.getRequestDispatcher("affi_list_forum.jsp");
-		rd.include(request, response);
-
+		
+		try (PrintWriter out = response.getWriter()) {
+			//out.println("<h1> Success: supprimer un forum </h1>");
+			RequestDispatcher rd = request.getRequestDispatcher("affi_list_forum.jsp");
+			rd.include(request, response);
+		}
 	}
 
 	/**
