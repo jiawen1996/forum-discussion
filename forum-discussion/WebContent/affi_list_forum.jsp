@@ -47,7 +47,7 @@
 				<td>
 					<!-- <form action="MessageManager" method="GET">-->
 					<form action="ForumManager" method="GET">
-						<input type="hidden" name="idForum" value="${forum.id}">
+						<input type="hidden" name="idEnterForum" value="${forum.id}">
 						<input type="submit" value="Entrer">
 					</form>
 				</td>

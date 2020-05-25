@@ -153,7 +153,7 @@ public class ForumManager extends HttpServlet {
 			ForumDAOImpl forumDAO = new ForumDAOImpl();
 			forumDAO._update(editForum);
 
-			List<Forum> listForums = (ArrayList<Forum>) ForumDAOImpl.FindAll(editForum.getOwner());
+			List<Forum> listForums = (ArrayList<Forum>) ForumDAOImpl.FindAll();
 			session.setAttribute("listForums", listForums);
 
 			RequestDispatcher rd = request.getRequestDispatcher("affi_list_forum.jsp");
@@ -244,7 +244,7 @@ public class ForumManager extends HttpServlet {
 		System.out.println("******** id forum to delete : " + idForum + " **********");
 		forumDAO._delete(forum);
 
-		List<Forum> listForums = (ArrayList<Forum>) ForumDAOImpl.FindAll(currentUser);
+		List<Forum> listForums = (ArrayList<Forum>) ForumDAOImpl.FindAll();
 		session.setAttribute("listForums", listForums);
 
 		PrintWriter out = response.getWriter();
@@ -264,9 +264,9 @@ public class ForumManager extends HttpServlet {
 		try {
 			HttpSession session = request.getSession();
 			User currentUser = (User) session.getAttribute("user");
-			List<Forum> listForums = (ArrayList<Forum>) ForumDAOImpl.FindAll(currentUser);
+			List<Forum> listForums = (ArrayList<Forum>) ForumDAOImpl.FindAll();
 
-			if (request.getParameter("idForum") != null) {
+			if (request.getParameter("idEnterForum") != null) {
 
 				try {
 					userSubscription(request, response);
