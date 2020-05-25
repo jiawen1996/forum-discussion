@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,6 +38,7 @@ public class ForumManager extends HttpServlet {
 		this.forumDAO = new ForumDAOImpl();
 		// TODO Auto-generated constructor stub
 	}
+	
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
@@ -67,11 +69,39 @@ public class ForumManager extends HttpServlet {
 			} catch (ClassNotFoundException | IOException | SQLException | ServletException e) {
 				e.printStackTrace();
 			}
+		} 
+
+	}
+
+	private void addUser(HttpServletRequest request, HttpServletResponse response) 
+			throws ClassNotFoundException, IOException, SQLException, ServletException {
+		HttpSession session = request.getSession();
+		RequestDispatcher rd = null;
+		Integer idForum = Integer.parseInt(request.getParameter("idForum"));
+		System.out.println("****** ID FORUM TO ENTER : " + idForum);
+
+		if (session.getAttribute("login") == null) {
+			rd = request.getRequestDispatcher("echec_login.jsp");
 		} else {
-
-			//processRequest(request, response);
+			Forum forum = ForumDAOImpl.FindById(idForum).get(0);
+			User user = (User) session.getAttribute("user");
+			Set<User> listUser = forum.getUsers(); 
+			
+			if (listUser.add(user)) {
+				forum.setUsers(listUser);
+				boolean res = forumDAO.updateUsers(forum);
+				
+				if (res) {
+					session.setAttribute("forum",forum);
+					session.setAttribute("usersForum",listUser);
+					rd = request.getRequestDispatcher("forum.jsp");
+				} else {
+					rd = request.getRequestDispatcher("erreur.jsp");
+				}
+			}
 		}
-
+		rd.include(request, response);
+		
 	}
 
 	private void modifyProcess(HttpServletRequest request, HttpServletResponse response) 
@@ -227,12 +257,20 @@ public class ForumManager extends HttpServlet {
 			HttpSession session = request.getSession();
 			User currentUser = (User) session.getAttribute("user");
 			List<Forum> listForums = (ArrayList<Forum>) ForumDAOImpl.FindAll(currentUser);
-			try (PrintWriter out = response.getWriter()) {
-
+			
+			if (request.getParameter("idForum") != null) {
+				
+				try {
+					addUser(request, response);
+				} catch (ClassNotFoundException | IOException | SQLException | ServletException e) {
+					e.printStackTrace();
+				}
+			} else {
 				session.setAttribute("listForums", listForums);
 				RequestDispatcher rd = request.getRequestDispatcher("affi_list_forum.jsp");
 				rd.forward(request, response);
 			}
+				
 		} catch (SQLException | ClassNotFoundException ex) {
 			Logger.getLogger(ForumManager.class.getName()).log(Level.SEVERE, null, ex);
 		}

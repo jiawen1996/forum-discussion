@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -129,6 +130,54 @@ public class ForumDAOImpl implements IForumDAO<Forum> {
 			session.close();
 		}
 		return null;
+	}
+	
+	public List<User> getListUsers(Integer id) {
+		Session session = factory.openSession();
+		Transaction tx = null;
+		try {
+			tx = session.beginTransaction();
+			String hql = "select users from Forum where id = ?";
+			Query query = session.createQuery(hql, Forum.class);
+			query.setParameter(0, id);
+			List<User> listUsers = query.getResultList();
+			tx.commit();
+			return listUsers;
+		} catch (HibernateException e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		return null;
+	}
+	
+	public boolean updateUsers(Forum f) {
+		Session session = factory.openSession();
+		Transaction tx = null;
+		int forumId = f.getId();
+		Set<User> users = f.getUsers();
+		
+		Forum forum = (Forum) session.get(Forum.class, forumId);
+		
+		try {
+			tx = session.beginTransaction();
+			String hql = "UPDATE Forum set users = ? WHERE id = ?";
+			Query query = session.createQuery(hql);
+			query.setParameter(0, users);
+			query.setParameter(1, forumId);
+			int result = query.executeUpdate();
+			tx.commit();
+			return true;
+		} catch (HibernateException e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		return false;
 	}
 
 }
