@@ -263,7 +263,6 @@ public class ForumManager extends HttpServlet {
 
 		try {
 			HttpSession session = request.getSession();
-			User currentUser = (User) session.getAttribute("user");
 			List<Forum> listForums = (ArrayList<Forum>) ForumDAOImpl.FindAll();
 
 			if (request.getParameter("idEnterForum") != null) {
