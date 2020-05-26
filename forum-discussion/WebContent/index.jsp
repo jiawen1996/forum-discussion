@@ -7,7 +7,7 @@
 <meta http-equiv="refresh" content="0; URL=connexion.jsp">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Insert title here</title>
+<title>Forum-discussion</title>
 </head>
 <body>
 	<div>Redirection</div>

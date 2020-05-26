@@ -29,6 +29,9 @@
 		<input type="hidden" name="envoyerMessage" value="message"> 
 		<input type="submit" value="Envoyer">
 	</form>
+	
+	<br />
+	<a href="home.jsp">Accueil</a>
 </body>
 
 </html>

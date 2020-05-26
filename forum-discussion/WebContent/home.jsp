@@ -23,11 +23,11 @@
 		<%=session.getAttribute("login")%></h3>
 	<nav>
 
-		| <a href='ForumManager'>Afficher la liste des forums publiés</a> |
-
+		| <a href='ForumManager?publicForum'>Afficher la liste de forums publiés</a> |
+		<a href='ForumManager?followedForum'>Afficher la liste de forums abonnés</a> |
 		<%
 		if ("admin".equalsIgnoreCase(role)) {
-	%>
+		%>
 		<a href='menu.jsp'>Menu administrateur</a> |
 
 		<%
