@@ -21,10 +21,10 @@
 		<ul>
 			<li><a href='ajouter_nv_util.jsp'>Créer un nouveau
 				utilisateur</a></li>
-			<li><a href='UserManager'>Afficher la liste des utilisateurs</a></li>
+			<li><a href='UserManager'>Afficher la liste d'utilisateurs</a></li>
 			<li><a href='ajouter_nv_forum.jsp'>Créer un nouveau
 				forum</a></li>
-			<li><a href='ForumManager'>Afficher la liste des forum</a></li>
+			<li><a href='ForumManager?allForum'>Afficher la liste de forums</a></li>
 			<li><a href='home.jsp'>Accueil</a></li>
 		</ul>
 	</nav>

@@ -58,6 +58,13 @@ public class MessageManager extends HttpServlet {
 			Forum currentForum = (Forum) session.getAttribute("forum");
 			Integer idForum = currentForum.getId();
 			MessageId newMessage = messageDAO._insert(content, idUser, idForum);
+			if (newMessage != null) {
+				List<Message> listMessages = (ArrayList<Message>) MessageDAOImpl.FindAllByForum(currentForum);
+				
+				session.setAttribute("forum", currentForum);
+				session.setAttribute("listMessages", listMessages);
+			}
+			
 
 			response.setContentType("text/html;charset=UTF-8");
 			try (PrintWriter out = response.getWriter()) {

@@ -54,6 +54,7 @@ public class UserDAOImpl implements IUserDAO<User> {
 			user.setLogin(u.getLogin());
 			user.setGender(u.getGender());
 			user.setIsAdmin(u.getIsAdmin());
+			user.setPwd(u.getPwd());
 			
 			session.update(user);
 			tx.commit();

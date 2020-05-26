@@ -99,7 +99,7 @@ public class ForumManager extends HttpServlet {
 			if (res) {
 				Forum currentForum = ForumDAOImpl.FindById(idEnterForum).get(0);
 				List<Message> listMessages = (ArrayList<Message>) MessageDAOImpl.FindAllByForum(currentForum);
-				
+
 				session.setAttribute("forum", currentForum);
 				session.setAttribute("listMessages", listMessages);
 
@@ -212,8 +212,13 @@ public class ForumManager extends HttpServlet {
 
 			User currentUser = (User) session.getAttribute("user");
 			Integer newForumId = forumDAO._insert(title, description, currentUser);
+
+			// Si l'utilisateur ne s'est pas enregistré dans ce forum
+			boolean res = forumDAO.updateUsers(newForumId, currentUser.getId());
+
 			try {
 				Forum newForum = ForumDAOImpl.FindById(newForumId).get(0);
+
 				response.setContentType("text/html;charset=UTF-8");
 				try (PrintWriter out = response.getWriter()) {
 					out.println("<h1> Un nouveau forum est ajouté : </h1>");
@@ -251,11 +256,12 @@ public class ForumManager extends HttpServlet {
 		List<Forum> listForums = (ArrayList<Forum>) ForumDAOImpl.FindAll();
 		session.setAttribute("listForums", listForums);
 
-		PrintWriter out = response.getWriter();
-		out.println("<h1> Success: supprimer un forum </h1>");
-		RequestDispatcher rd = request.getRequestDispatcher("affi_list_forum.jsp");
-		rd.include(request, response);
-
+		response.setContentType("text/html;charset=UTF-8");
+		try (PrintWriter out = response.getWriter()) {
+			out.println("<h1> Success: supprimer un forum </h1>");
+			RequestDispatcher rd = request.getRequestDispatcher("affi_list_forum.jsp");
+			rd.include(request, response);
+		}
 	}
 
 	/**
@@ -267,7 +273,19 @@ public class ForumManager extends HttpServlet {
 
 		try {
 			HttpSession session = request.getSession();
+			User user = (User) session.getAttribute("user");
 			List<Forum> listForums = (ArrayList<Forum>) ForumDAOImpl.FindAll();
+			System.out.println("ALL FORUMS " + listForums.size());
+			List<Forum> followedForums = getFollowedForums(listForums, user);
+			List<Forum> publicForums = new ArrayList<Forum>();
+			// remove common forum
+			if (followedForums.size() > 0) {
+				for (Forum f : listForums) {
+					if (!followedForums.contains(f)) {
+						publicForums.add(f);
+					}
+				}
+			}
 
 			if (request.getParameter("idEnterForum") != null) {
 
@@ -276,8 +294,23 @@ public class ForumManager extends HttpServlet {
 				} catch (ClassNotFoundException | IOException | SQLException | ServletException e) {
 					e.printStackTrace();
 				}
-			} else {
+			}
+
+			if (request.getParameter("followedForum") != null) {
+				session.setAttribute("listForums", followedForums);
+				RequestDispatcher rd = request.getRequestDispatcher("followed_forum.jsp");
+				rd.include(request, response);
+			}
+
+			if (request.getParameter("allForum") != null) {
 				session.setAttribute("listForums", listForums);
+				RequestDispatcher rd = request.getRequestDispatcher("affi_list_forum.jsp");
+				rd.forward(request, response);
+			}
+
+			if (request.getParameter("publicForum") != null) {
+
+				session.setAttribute("listForums", publicForums);
 				RequestDispatcher rd = request.getRequestDispatcher("affi_list_forum.jsp");
 				rd.forward(request, response);
 			}
@@ -285,6 +318,18 @@ public class ForumManager extends HttpServlet {
 		} catch (SQLException | ClassNotFoundException ex) {
 			Logger.getLogger(ForumManager.class.getName()).log(Level.SEVERE, null, ex);
 		}
+	}
+
+	private List<Forum> getFollowedForums(List<Forum> listForums, User user) {
+		List<Forum> res = new ArrayList<Forum>();
+
+		for (Forum f : listForums) {
+			if (f.getUsers().contains(user)) {
+				System.out.println("followeddddd Forums");
+				res.add(f);
+			}
+		}
+		return res;
 	}
 
 }

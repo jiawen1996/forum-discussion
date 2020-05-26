@@ -30,6 +30,9 @@
 		<input type="submit" value="Envoyer">
 		<a href="home.jsp">Accueil</a>
 	</form>
+	
+	<br />
+	<a href="home.jsp">Accueil</a>
 </body>
 
 </html>
