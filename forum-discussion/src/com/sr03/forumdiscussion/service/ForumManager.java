@@ -85,8 +85,8 @@ public class ForumManager extends HttpServlet {
 			throws ClassNotFoundException, IOException, SQLException, ServletException {
 		HttpSession session = request.getSession();
 		RequestDispatcher rd = null;
-		Integer idForum = Integer.parseInt(request.getParameter("idForum"));
-		System.out.println("****** ID FORUM TO ENTER : " + idForum);
+		Integer idEnterForum = Integer.parseInt(request.getParameter("idEnterForum"));
+		System.out.println("****** ID FORUM TO ENTER : " + idEnterForum);
 
 		if (session.getAttribute("login") == null) {
 			rd = request.getRequestDispatcher("echec_login.jsp");
@@ -94,10 +94,10 @@ public class ForumManager extends HttpServlet {
 			User user = (User) session.getAttribute("user");
 			Integer idUser = user.getId();
 			// Si l'utilisateur ne s'est pas enregistré dans ce forum
-			boolean res = forumDAO.updateUsers(idForum, idUser);
+			boolean res = forumDAO.updateUsers(idEnterForum, idUser);
 
 			if (res) {
-				Forum currentForum = ForumDAOImpl.FindById(idForum).get(0);
+				Forum currentForum = ForumDAOImpl.FindById(idEnterForum).get(0);
 				List<Message> listMessages = (ArrayList<Message>) MessageDAOImpl.FindAllByForum(currentForum);
 				
 				session.setAttribute("forum", currentForum);

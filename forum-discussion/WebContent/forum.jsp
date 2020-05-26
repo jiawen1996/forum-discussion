@@ -28,6 +28,7 @@
 		<input type="text" id="content" name="Message content" style="width:200px; height:20px;" /> <br> 
 		<input type="hidden" name="envoyerMessage" value="message"> 
 		<input type="submit" value="Envoyer">
+		<a href="home.jsp">Accueil</a>
 	</form>
 </body>
 
