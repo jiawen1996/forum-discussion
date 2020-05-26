@@ -315,6 +315,13 @@ public class ForumManager extends HttpServlet {
 				rd.forward(request, response);
 			}
 
+			if (request.getParameter("idQuitForum") != null) {
+
+				session.setAttribute("listForums", publicForums);
+				RequestDispatcher rd = request.getRequestDispatcher("affi_list_forum.jsp");
+				rd.forward(request, response);
+			}
+
 		} catch (SQLException | ClassNotFoundException ex) {
 			Logger.getLogger(ForumManager.class.getName()).log(Level.SEVERE, null, ex);
 		}
