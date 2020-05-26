@@ -1,6 +1,7 @@
 /.metadata/
 .idea
 /forum-discussion/.idea/
+/forum-discussion/out/
 .DS_Store
 .classpath
 .project
