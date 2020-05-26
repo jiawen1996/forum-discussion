@@ -19,8 +19,6 @@ Class Forum{
 Class Subscriptions{
     {field} id_user : INT {clef étrangère}
     {field} id_forum : INT {clef étrangère}
-    {field} owner : User
-    {field} description : VARCHAR
 }
 
 Class Message{
