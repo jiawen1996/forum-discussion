@@ -8,6 +8,7 @@
 <title>Welcome</title>
 </head>
 <body>
+	<h1>Login</h1>
 	<form action="Connexion" method="POST">
            <div>
                <label for="username">Username:</label>
