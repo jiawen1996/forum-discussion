@@ -108,7 +108,10 @@ public class UserManager extends HttpServlet {
 			}
 		}
 		
-		addNewUser(request,response);
+		if (request.getParameter("validNewUser") != null) {
+			addNewUser(request,response);
+		}
+		
 	}
 
 	private void addNewUser(HttpServletRequest request, HttpServletResponse response) 

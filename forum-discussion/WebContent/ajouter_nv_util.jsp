@@ -37,7 +37,7 @@
             
            <label> Admin </label>
            <input type="checkbox" name="admin" value="admin" />
-           <input type="submit" value="Submit">  
+           <input type="submit" name="validNewUser" value="Submit">  
        </form>
        <br/>
 		<a href="menu.jsp">Menu administrateur</a>
