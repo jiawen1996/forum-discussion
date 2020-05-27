@@ -9,17 +9,17 @@ Class User{
     {field} is_admin : TINYINT
 }
 
-Class Forum{
-    {field} id : INT {clef}
-    {field} title : VARCHAR
-    {field} owner : User
-    {field} description : VARCHAR
-}
+' Class Forum{
+'     {field} id : INT {clef}
+'     {field} title : VARCHAR
+'     {field} owner : User
+'     {field} description : VARCHAR
+' }
 
-Class Subscriptions{
-    {field} id_user : INT {clef étrangère}
-    {field} id_forum : INT {clef étrangère}
-}
+' Class Subscriptions{
+'     {field} id_user : INT {clef étrangère}
+'     {field} id_forum : INT {clef étrangère}
+' }
 
 Class Message{
     {field} id : INT {clef locale}
@@ -28,9 +28,10 @@ Class Message{
     {field} content : VARCHAR
 }
 
-User "*" - "*" Forum
-(User, Forum) .. Subscriptions
+User "1" - "*" Message
+' User "*" - "*" Forum
+' (User, Forum) .. Subscriptions
 
-Forum *-- "*" Message
+' Forum *-- "*" Message
 
 @enduml

@@ -28,7 +28,7 @@ import com.sr03.forumdiscussion.model.User;
  * 
  * @author lounis
  */
-@WebServlet(name = "UserManager", urlPatterns = { "/UserManager" })
+@WebServlet("/UserManager")
 public class UserManager extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
