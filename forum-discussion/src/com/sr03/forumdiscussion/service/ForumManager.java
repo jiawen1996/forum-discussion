@@ -73,9 +73,19 @@ public class ForumManager extends HttpServlet {
 				e.printStackTrace();
 			}
 		}
+		
 		if (request.getParameter("idCreate") != null) {
 			try {
 				createForum(request, response);
+			} catch (ClassNotFoundException | IOException | SQLException | ServletException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		if (request.getParameter("idQuitForum") != null) {
+
+			try {
+				userUnsubscription(request, response);
 			} catch (ClassNotFoundException | IOException | SQLException | ServletException e) {
 				e.printStackTrace();
 			}
@@ -135,17 +145,7 @@ public class ForumManager extends HttpServlet {
 				RequestDispatcher rd = request.getRequestDispatcher("affi_list_forum.jsp");
 				rd.forward(request, response);
 			}
-
-			if (request.getParameter("idQuitForum") != null) {
-
-				try {
-					userUnsubscription(request, response);
-				} catch (ClassNotFoundException | IOException | SQLException | ServletException e) {
-					e.printStackTrace();
-				}
-			}
-
-
+			
 		} catch (SQLException | ClassNotFoundException ex) {
 			Logger.getLogger(ForumManager.class.getName()).log(Level.SEVERE, null, ex);
 		}
@@ -379,9 +379,22 @@ public class ForumManager extends HttpServlet {
 	}
 
 	// TODO
+	/**
+	 * User Unsubscribe a forum
+	 * If user is the owner, he can't see the forum in his list of subscriptions 
+	 * but he is still the owner
+	 * @param request
+	 * @param response
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 * @throws SQLException
+	 * @throws NumberFormatException
+	 * @throws ServletException
+	 */
 	private void userUnsubscription(HttpServletRequest request, HttpServletResponse response) throws ClassNotFoundException, IOException, SQLException, NumberFormatException, ServletException {
 		HttpSession session = request.getSession();
 		RequestDispatcher rd = null;
+		
 		Integer idQuitForum = Integer.parseInt(request.getParameter("idQuitForum"));
 		System.out.println("****** ID FORUM TO QUIT : " + idQuitForum);
 
@@ -390,15 +403,12 @@ public class ForumManager extends HttpServlet {
 		} else {
 			User user = (User) session.getAttribute("user");
 			
-			Forum quitForum = ForumDAOImpl.FindById(idQuitForum).get(0);
+			forumDAO.removeFollower(idQuitForum, user.getId());
 			
-			quitForum.removeFollower(user);
-			user.removeForumSubscriptions(quitForum);
-			
-			userDAO.updateForumSubscriptions(user);
-			forumDAO.updateSubscribeUsers(quitForum);
+			Set<Forum> listForums = userDAO.getForumSubscriptions(user.getId());
 
-			session.setAttribute("listForums", user.getForumSubscriptions());
+			session.removeAttribute("listForums");
+			session.setAttribute("listForums", listForums);
 			rd = request.getRequestDispatcher("followed_forum.jsp");
 			
 		}

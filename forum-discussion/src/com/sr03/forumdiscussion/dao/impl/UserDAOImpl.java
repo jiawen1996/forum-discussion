@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -190,5 +191,10 @@ public class UserDAOImpl implements IUserDAO<User> {
 	public static List<Forum> updateForumSubscriptions(User u) {
 		return null;
 
+	}
+
+	public Set<Forum> getForumSubscriptions(Integer id) throws ClassNotFoundException, IOException, SQLException {
+		User user = (User) FindById(id).get(0);
+		return user.getForumSubscriptions();
 	}
 }
