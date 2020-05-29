@@ -31,6 +31,7 @@ import com.sr03.forumdiscussion.model.User;
 public class ForumManager extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private ForumDAOImpl forumDAO;
+	private UserDAOImpl userDAO;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -38,9 +39,10 @@ public class ForumManager extends HttpServlet {
 	public ForumManager() {
 		super();
 		this.forumDAO = new ForumDAOImpl();
-		// TODO Auto-generated constructor stub
+		this.userDAO = new UserDAOImpl(); 
 	}
 
+	//OK
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
@@ -58,7 +60,7 @@ public class ForumManager extends HttpServlet {
 
 		if (request.getParameter("validModify") != null) {
 			try {
-				modifyProcess(request, response);
+				modifyForum(request, response);
 			} catch (ClassNotFoundException | IOException | SQLException | ServletException e) {
 				e.printStackTrace();
 			}
@@ -66,21 +68,99 @@ public class ForumManager extends HttpServlet {
 
 		if (request.getParameter("idDelete") != null) {
 			try {
-				deleteProcess(request, response);
+				deleteForum(request, response);
 			} catch (ClassNotFoundException | IOException | SQLException | ServletException e) {
 				e.printStackTrace();
 			}
 		}
 		if (request.getParameter("idCreate") != null) {
 			try {
-				createProcess(request, response);
+				createForum(request, response);
 			} catch (ClassNotFoundException | IOException | SQLException | ServletException e) {
 				e.printStackTrace();
 			}
 		}
 
 	}
+	
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
+		try {
+			HttpSession session = request.getSession();
+			User user = (User) session.getAttribute("user");
+			List<Forum> listAllForums = (ArrayList<Forum>) ForumDAOImpl.FindAll();
+			
+			Set<Forum> followedForums = UserDAOImpl.FindById(user.getId()).get(0).getForumSubscriptions();
+
+			if (request.getParameter("idEnterForum") != null) {
+
+				try {
+					userSubscription(request, response);
+				} catch (ClassNotFoundException | IOException | SQLException | ServletException e) {
+					e.printStackTrace();
+				}
+			}
+
+			if (request.getParameter("followedForum") != null) {
+				session.setAttribute("listForums", followedForums);
+				RequestDispatcher rd = request.getRequestDispatcher("followed_forum.jsp");
+				rd.include(request, response);
+			}
+
+			if (request.getParameter("allForum") != null) {
+				session.setAttribute("listForums", listAllForums);
+				RequestDispatcher rd = request.getRequestDispatcher("affi_list_forum.jsp");
+				rd.forward(request, response);
+			}
+
+			if (request.getParameter("publicForum") != null) {
+
+				List<Forum> publicForums = new ArrayList<Forum>();
+				// remove common forum
+				if (followedForums.size() > 0) {
+					for (Forum f : listAllForums) {
+						if (!followedForums.contains(f)) {
+							System.out.println("add no-followed forum");
+							publicForums.add(f);
+						}
+					}
+				}
+				session.removeAttribute("listForums");
+				session.setAttribute("listForums", publicForums);
+				RequestDispatcher rd = request.getRequestDispatcher("affi_list_forum.jsp");
+				rd.forward(request, response);
+			}
+
+			if (request.getParameter("idQuitForum") != null) {
+
+				try {
+					userUnsubscription(request, response);
+				} catch (ClassNotFoundException | IOException | SQLException | ServletException e) {
+					e.printStackTrace();
+				}
+			}
+
+
+		} catch (SQLException | ClassNotFoundException ex) {
+			Logger.getLogger(ForumManager.class.getName()).log(Level.SEVERE, null, ex);
+		}
+	}
+
+	//OK
+	/**
+	 * User subscribe a forum 
+	 * @param request
+	 * @param response
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 * @throws SQLException
+	 * @throws ServletException
+	 */
 	private void userSubscription(HttpServletRequest request, HttpServletResponse response)
 			throws ClassNotFoundException, IOException, SQLException, ServletException {
 		HttpSession session = request.getSession();
@@ -93,8 +173,9 @@ public class ForumManager extends HttpServlet {
 		} else {
 			User user = (User) session.getAttribute("user");
 			Integer idUser = user.getId();
-			// Si l'utilisateur ne s'est pas enregistré dans ce forum
-			boolean res = forumDAO.updateUsers(idEnterForum, idUser);
+			
+			// Add user to list followers if uses haven't subscribed 
+			boolean res = forumDAO.addFollower(idEnterForum, idUser);
 
 			if (res) {
 				Forum currentForum = ForumDAOImpl.FindById(idEnterForum).get(0);
@@ -105,15 +186,26 @@ public class ForumManager extends HttpServlet {
 
 				rd = request.getRequestDispatcher("forum.jsp");
 			} else {
-
-				rd = request.getRequestDispatcher("erreur.jsp");
+				try (PrintWriter out = response.getWriter()) {
+					out.println("<h1> Impossible à s'abonner au forum : </h1>");
+					rd = request.getRequestDispatcher("erreur.jsp");
+				}
 			}
 		}
 		rd.include(request, response);
-
 	}
 
-	private void modifyProcess(HttpServletRequest request, HttpServletResponse response)
+	//OK
+	/***
+	 * Admin modify forum's information such as : title, description and owner
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
+	private void modifyForum(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException, ClassNotFoundException, SQLException {
 		HttpSession session = request.getSession();
 
@@ -122,21 +214,29 @@ public class ForumManager extends HttpServlet {
 			RequestDispatcher rd = request.getRequestDispatcher("echec_login.jsp");
 			rd.forward(request, response);
 		} else {
-			// récupérer des champs depuis la formulaire
+			// get data form input form
 			String title = request.getParameter("Forum title");
 			String description = request.getParameter("Forum description");
 			String firstName = request.getParameter("Forum owner first name");
 			String lastName = request.getParameter("Forum owner last name");
 
 			Forum editForum = (Forum) session.getAttribute("editForum");
-			User oldOwner = editForum.getOwner();
 
-			// Check owner
+			// Check owner's existence and owner's role
 			if (!(firstName.equals("") && lastName.equals(""))) {
 				User newOwner = UserDAOImpl.FindByLastAndFirstName(firstName, lastName).get(0);
 
-				if (newOwner != null) {
+				if (newOwner != null && newOwner.getIsAdmin() == 1) {
 					editForum.setOwner(newOwner);
+					
+					// Add owner to list followers
+					forumDAO.addFollower(editForum.getId(), newOwner.getId());
+				} else {
+					try (PrintWriter out = response.getWriter()) {
+						out.println("<h1> Nouveau propriétaire invalide </h1>");
+						RequestDispatcher rd = request.getRequestDispatcher("erreur.jsp");
+						rd.include(request, response);
+					}
 				}
 			}
 
@@ -154,11 +254,14 @@ public class ForumManager extends HttpServlet {
 					+ editForum.getTitle() + "\n description : " + editForum.getDescription() + "\n owner : "
 					+ editForum.getOwner().getLogin() + "\\n **********");
 
-			ForumDAOImpl forumDAO = new ForumDAOImpl();
 			forumDAO._update(editForum);
 
 			List<Forum> listForums = (ArrayList<Forum>) ForumDAOImpl.FindAll();
 			session.setAttribute("listForums", listForums);
+			
+			// End of modifying process
+			session.removeAttribute("owner");
+			session.removeAttribute("editForum");
 
 			RequestDispatcher rd = request.getRequestDispatcher("affi_list_forum.jsp");
 			rd.include(request, response);
@@ -166,10 +269,19 @@ public class ForumManager extends HttpServlet {
 
 	}
 
+	//OK
+	/**
+	 * Redirect to a new page for modifying forum's info
+	 * @param request
+	 * @param response
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 * @throws SQLException
+	 * @throws ServletException
+	 */
 	private void redirectModifyPage(HttpServletRequest request, HttpServletResponse response)
 			throws ClassNotFoundException, IOException, SQLException, ServletException {
 		Integer idForum = Integer.parseInt(request.getParameter("idModify"));
-		System.out.println("****** ID FORUM TO MODIFY : " + idForum);
 		HttpSession session = request.getSession();
 		RequestDispatcher rd;
 
@@ -188,15 +300,16 @@ public class ForumManager extends HttpServlet {
 
 	}
 
+	//OK
 	/**
-	 * Processes requests for both HTTP <code>POST</code> methods.
+	 * Admin create a new forum
 	 *
 	 * @param request  servlet request
 	 * @param response servlet response
 	 * @throws ServletException if a servlet-specific error occurs
 	 * @throws IOException      if an I/O error occurs
 	 */
-	protected void createProcess(HttpServletRequest request, HttpServletResponse response)
+	protected void createForum(HttpServletRequest request, HttpServletResponse response)
 			throws ClassNotFoundException, ServletException, IOException, SQLException {
 		response.setContentType("text/html;charset=UTF-8");
 		HttpSession session = request.getSession();
@@ -206,32 +319,32 @@ public class ForumManager extends HttpServlet {
 			rd.forward(request, response);
 
 		} else {
-			// récupérer des champs depuis la formulaire
+			// get data form input form
 			String title = request.getParameter("Forum title");
 			String description = request.getParameter("Forum description");
 
 			User currentUser = (User) session.getAttribute("user");
 			Integer newForumId = forumDAO._insert(title, description, currentUser);
 
-			// Si l'utilisateur ne s'est pas enregistré dans ce forum
-			boolean res = forumDAO.updateUsers(newForumId, currentUser.getId());
+			// Add user to list followers if uses haven't subscribed
+			boolean res = forumDAO.addFollower(newForumId, currentUser.getId());
 
 			try {
 				Forum newForum = ForumDAOImpl.FindById(newForumId).get(0);
 
 				response.setContentType("text/html;charset=UTF-8");
+				
 				try (PrintWriter out = response.getWriter()) {
 					out.println("<h1> Un nouveau forum est ajouté : </h1>");
-					out.println(newForum.toString());
+					out.println(newForum.getTitle());
+					
 					RequestDispatcher rd = request.getRequestDispatcher("menu.jsp");
 					rd.include(request, response);
 				}
 			} catch (SQLException | ClassNotFoundException ex) {
-				// TODO Auto-generated catch block
 				Logger.getLogger(UserManager.class.getName()).log(Level.SEVERE, null, ex);
 			}
 		}
-
 	}
 
 	/**
@@ -244,13 +357,14 @@ public class ForumManager extends HttpServlet {
 	 * @throws SQLException
 	 * @throws ClassNotFoundException
 	 */
-	protected void deleteProcess(HttpServletRequest request, HttpServletResponse response)
+	protected void deleteForum(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException, ClassNotFoundException, SQLException {
 		Integer idForum = Integer.parseInt(request.getParameter("idDelete"));
 		HttpSession session = request.getSession();
 		User currentUser = (User) session.getAttribute("user");
 		Forum forum = ForumDAOImpl.FindById(idForum).get(0);
 		System.out.println("******** id forum to delete : " + idForum + " **********");
+		
 		forumDAO._delete(forum);
 
 		List<Forum> listForums = (ArrayList<Forum>) ForumDAOImpl.FindAll();
@@ -264,79 +378,33 @@ public class ForumManager extends HttpServlet {
 		}
 	}
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	// TODO
+	private void userUnsubscription(HttpServletRequest request, HttpServletResponse response) throws ClassNotFoundException, IOException, SQLException, NumberFormatException, ServletException {
+		HttpSession session = request.getSession();
+		RequestDispatcher rd = null;
+		Integer idQuitForum = Integer.parseInt(request.getParameter("idQuitForum"));
+		System.out.println("****** ID FORUM TO QUIT : " + idQuitForum);
 
-		try {
-			HttpSession session = request.getSession();
+		if (session.getAttribute("login") == null) {
+			rd = request.getRequestDispatcher("echec_login.jsp");
+		} else {
 			User user = (User) session.getAttribute("user");
-			List<Forum> listForums = (ArrayList<Forum>) ForumDAOImpl.FindAll();
-			System.out.println("ALL FORUMS " + listForums.size());
-			List<Forum> followedForums = getFollowedForums(listForums, user);
-			List<Forum> publicForums = new ArrayList<Forum>();
-			// remove common forum
-			if (followedForums.size() > 0) {
-				for (Forum f : listForums) {
-					if (!followedForums.contains(f)) {
-						publicForums.add(f);
-					}
-				}
-			}
+			
+			Forum quitForum = ForumDAOImpl.FindById(idQuitForum).get(0);
+			
+			quitForum.removeFollower(user);
+			user.removeForumSubscriptions(quitForum);
+			
+			userDAO.updateForumSubscriptions(user);
+			forumDAO.updateSubscribeUsers(quitForum);
 
-			if (request.getParameter("idEnterForum") != null) {
-
-				try {
-					userSubscription(request, response);
-				} catch (ClassNotFoundException | IOException | SQLException | ServletException e) {
-					e.printStackTrace();
-				}
-			}
-
-			if (request.getParameter("followedForum") != null) {
-				session.setAttribute("listForums", followedForums);
-				RequestDispatcher rd = request.getRequestDispatcher("followed_forum.jsp");
-				rd.include(request, response);
-			}
-
-			if (request.getParameter("allForum") != null) {
-				session.setAttribute("listForums", listForums);
-				RequestDispatcher rd = request.getRequestDispatcher("affi_list_forum.jsp");
-				rd.forward(request, response);
-			}
-
-			if (request.getParameter("publicForum") != null) {
-
-				session.setAttribute("listForums", publicForums);
-				RequestDispatcher rd = request.getRequestDispatcher("affi_list_forum.jsp");
-				rd.forward(request, response);
-			}
-
-			if (request.getParameter("idQuitForum") != null) {
-
-				session.setAttribute("listForums", publicForums);
-				RequestDispatcher rd = request.getRequestDispatcher("affi_list_forum.jsp");
-				rd.forward(request, response);
-			}
-
-		} catch (SQLException | ClassNotFoundException ex) {
-			Logger.getLogger(ForumManager.class.getName()).log(Level.SEVERE, null, ex);
+			session.setAttribute("listForums", user.getForumSubscriptions());
+			rd = request.getRequestDispatcher("followed_forum.jsp");
+			
 		}
-	}
+		rd.include(request, response);
 
-	private List<Forum> getFollowedForums(List<Forum> listForums, User user) {
-		List<Forum> res = new ArrayList<Forum>();
-
-		for (Forum f : listForums) {
-			if (f.getUsers().contains(user)) {
-				System.out.println("followeddddd Forums");
-				res.add(f);
-			}
-		}
-		return res;
+		
 	}
 
 }

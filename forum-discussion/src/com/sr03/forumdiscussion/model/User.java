@@ -120,6 +120,10 @@ public class User {
 	public void setForumSubscriptions(Set<Forum> forumSubscriptions) {
 		this.forumSubscriptions = forumSubscriptions;
 	}
+	
+	public void addForumSubscriptions(Forum forum) {
+		this.forumSubscriptions.add(forum);
+	}
 
 	@Override
 	public int hashCode() {
@@ -161,6 +165,11 @@ public class User {
 
 	public void setMessages(Set<Message> messages) {
 		this.messages = messages;
+	}
+
+	public void removeForumSubscriptions(Forum quitForum) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

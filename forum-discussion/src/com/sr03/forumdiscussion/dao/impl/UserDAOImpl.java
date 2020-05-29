@@ -13,6 +13,7 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
 
 import com.sr03.forumdiscussion.dao.IUserDAO;
+import com.sr03.forumdiscussion.model.Forum;
 import com.sr03.forumdiscussion.model.User;
 
 public class UserDAOImpl implements IUserDAO<User> {
@@ -177,7 +178,8 @@ public class UserDAOImpl implements IUserDAO<User> {
 		return null;
 	}
 
-	public void LoadForumSubscriptions() {
+	//TODO
+	public void loadForumSubscriptions() {
 
 	}
 
@@ -185,7 +187,8 @@ public class UserDAOImpl implements IUserDAO<User> {
 
 	}
 
-	public void updateForumSubscriptions() {
+	public static List<Forum> updateForumSubscriptions(User u) {
+		return null;
 
 	}
 }

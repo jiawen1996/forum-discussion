@@ -28,7 +28,7 @@
 			</set> </component> -->
 
 		<!-- mapping de type many to many -->
-		<set cascade="save-update" name="users" table="db_sr03.subscriptions"
+		<set cascade="save-update" name="followers" table="db_sr03.subscriptions"
 			inverse="false" lazy="false" fetch="select">
 			<!-- la clé étrangère de la table Subscriptions est id_user -->
 			<key column="id_forum"></key>

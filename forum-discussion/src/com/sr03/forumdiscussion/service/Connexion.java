@@ -8,6 +8,7 @@ package com.sr03.forumdiscussion.service;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.logging.Level;
@@ -53,6 +54,15 @@ public class Connexion extends HttpServlet {
                 rd.forward(request, response);
             } else {
             	HttpSession session = request.getSession();
+            	
+            	System.out.println("Before home : " + session.getAttributeNames());
+            	Enumeration<String> attsName = session.getAttributeNames(); 
+            	
+            	while (attsName.hasMoreElements()) {
+            		session.removeAttribute(attsName.nextElement());
+            	}
+            	
+            	System.out.println("After home delete : " + session.getAttributeNames());
             	session.setAttribute("user", u);
             	RequestDispatcher rd = request.getRequestDispatcher("home.jsp");
             	rd.forward(request, response);

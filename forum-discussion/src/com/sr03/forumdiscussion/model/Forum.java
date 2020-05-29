@@ -22,12 +22,12 @@ public class Forum {
 	private String description;
 	private Set<Message> messages;
 	private User owner;
-	private Set<User> users;
+	private Set<User> followers;
 
 	// constructeur par défaut
 	public Forum() {
 		this.messages = new HashSet<Message>();
-		this.users = new HashSet<User>();
+		this.followers = new HashSet<User>();
 	}
 
 	public Forum(String titre, String description, User u) {
@@ -105,12 +105,20 @@ public class Forum {
 		return null;
 	}
 
-	public Set<User> getUsers() {
-		return users;
+	public Set<User> getFollowers() {
+		return followers;
 	}
 
-	public void setUsers(Set<User> users) {
-		this.users = users;
+	public void setFollowers(Set<User> followers) {
+		this.followers = followers;
+	}
+	
+	public void removeFollower(User u) {
+		this.followers.remove(u);
+	}
+	
+	public void addFollower(User u) {
+		this.followers.add(u);
 	}
 
 }
