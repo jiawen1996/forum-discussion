@@ -68,7 +68,6 @@ public class MessageManager extends HttpServlet {
 
 			response.setContentType("text/html;charset=UTF-8");
 			try (PrintWriter out = response.getWriter()) {
-				out.println("<h1> Un nouveau message est ajouté : </h1>");
 				RequestDispatcher rd = request.getRequestDispatcher("forum.jsp");
 				rd.include(request, response);
 			}

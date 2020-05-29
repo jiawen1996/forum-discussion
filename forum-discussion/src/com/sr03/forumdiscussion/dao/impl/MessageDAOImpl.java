@@ -16,7 +16,7 @@ import org.hibernate.query.Query;
 
 public class MessageDAOImpl implements IMessageDAO<Message> {
 	private static SessionFactory factory = new Configuration().configure().buildSessionFactory();
-	private static String _query = "from Forum"; // for findAll static Method
+	private static String _query = "from Message"; // for findAll static Method
 
 	@Override
 	public MessageId _insert(String content, Integer idUser, Integer idForum) {
@@ -44,13 +44,12 @@ public class MessageDAOImpl implements IMessageDAO<Message> {
 
 	@Override
 	public void _update(Message f) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void _delete(Message f) {
-		// TODO Auto-generated method stub
+		
 
 	}
 
@@ -59,11 +58,14 @@ public class MessageDAOImpl implements IMessageDAO<Message> {
 		Transaction tx = null;
 		try {
 			tx = session.beginTransaction();
+			
 			String hql = "from Message where destination = ?";
-			Query query = session.createQuery(hql, Message.class);
+			Query<Message> query = session.createQuery(hql, Message.class);
 			query.setParameter(0, forum);
 			List<Message> listMessages = query.getResultList();
+			
 			tx.commit();
+			
 			return listMessages;
 		} catch (HibernateException e) {
 			if (tx != null)

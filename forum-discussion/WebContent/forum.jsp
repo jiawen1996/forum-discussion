@@ -18,21 +18,23 @@
 	</header>
 	
 	<div>
-	<h3>Fil de discussion</h3>
-	<br />
+	<h3>Liste de messages</h3>
 			<table class="table table-striped table-hover">
 				<tr class="thead-dark">
 					<th>Expditeur</th>
 					<th>Message</th>
+					<th>Date et heure de publication</th>
 		
 				</tr>
 				<c:forEach items="${listMessages}" var="message">
 					<tr>
 						<td><c:out value="${message.editor}" /></td>
 						<td><c:out value="${message.content}" /></td>
+						<td><c:out value="${message.datePublication}" /></td>
 					</tr>
 				</c:forEach>
 			</table>
+	<br />
 	<form action="MessageManager" method="post">
 		<label> Message </label> 
 		<input type="text" id="content" name="Message content" style="width:200px; height:20px;" /> <br> 
