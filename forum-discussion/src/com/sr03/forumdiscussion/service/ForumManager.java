@@ -42,7 +42,6 @@ public class ForumManager extends HttpServlet {
 		this.userDAO = new UserDAOImpl(); 
 	}
 
-	//OK
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
@@ -135,7 +134,6 @@ public class ForumManager extends HttpServlet {
 				if (followedForums.size() > 0) {
 					for (Forum f : listAllForums) {
 						if (!followedForums.contains(f)) {
-							System.out.println("add no-followed forum");
 							publicForums.add(f);
 						}
 					}
@@ -182,6 +180,7 @@ public class ForumManager extends HttpServlet {
 				List<Message> listMessages = (ArrayList<Message>) MessageDAOImpl.FindAllByForum(currentForum);
 
 				session.setAttribute("forum", currentForum);
+				session.setAttribute("owner", currentForum.getOwner());
 				session.setAttribute("listMessages", listMessages);
 
 				rd = request.getRequestDispatcher("forum.jsp");
@@ -396,7 +395,6 @@ public class ForumManager extends HttpServlet {
 		RequestDispatcher rd = null;
 		
 		Integer idQuitForum = Integer.parseInt(request.getParameter("idQuitForum"));
-		System.out.println("****** ID FORUM TO QUIT : " + idQuitForum);
 
 		if (session.getAttribute("login") == null) {
 			rd = request.getRequestDispatcher("echec_login.jsp");

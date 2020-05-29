@@ -6,30 +6,42 @@
 
 <head>
 <meta charset="UTF-8">
-<title>Liste message</title>
+<!-- <meta http-equiv="refresh" content="30" url="MessageManager"> -->
+<title>Forum : <c:out value="${forum.title}" /></title>
 </head>
 
 <body>
-	<table class="table table-striped table-hover">
-		<tr class="thead-dark">
-			<th>User</th>
-			<th>Content</th>
-
-		</tr>
-		<c:forEach items="${listMessages}" var="message">
-			<tr>
-				<td><c:out value="${message.editor}" /></td>
-				<td><c:out value="${message.content}" /></td>
-			</tr>
-		</c:forEach>
-	</table>
+	<header>
+		<h1>Forum : <c:out value="${forum.title}" /></h1>
+		Description : <c:out value="${forum.description}" /> <br />
+		Proprietaire : <c:out value="${owner.firstName}" /> <c:out value="${owner.lastName}" /><br />
+	</header>
+	
+	<div>
+	<h3>Fil de discussion</h3>
+	<br />
+			<table class="table table-striped table-hover">
+				<tr class="thead-dark">
+					<th>Expditeur</th>
+					<th>Message</th>
+		
+				</tr>
+				<c:forEach items="${listMessages}" var="message">
+					<tr>
+						<td><c:out value="${message.editor}" /></td>
+						<td><c:out value="${message.content}" /></td>
+					</tr>
+				</c:forEach>
+			</table>
 	<form action="MessageManager" method="post">
-		<label> Content </label> 
+		<label> Message </label> 
 		<input type="text" id="content" name="Message content" style="width:200px; height:20px;" /> <br> 
 		<input type="hidden" name="envoyerMessage" value="message"> 
 		<input type="submit" value="Envoyer">
 	</form>
 	
+	</div>
+		
 	<br />
 	<a href="home.jsp">Accueil</a>
 </body>
