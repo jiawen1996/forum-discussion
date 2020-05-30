@@ -6,10 +6,14 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Modifier d'un forum</title>
+<title>Modify a forum</title>
 </head>
 <body>
-	<h1>Modifier d'un forum</h1>
+	<% 
+		String role = session.getAttribute("role").toString();
+		if ("admin".equalsIgnoreCase(role)) {
+	%>
+	<h1>Modify a forum</h1>
 	<form action="ForumManager" method="POST">
 		<table>
 			<tr>
@@ -34,6 +38,15 @@
 		<input type="submit" name="validModify" value="Modifier">
 	</form>
 	<br/>
-		<a href="menu.jsp">Menu administrateur</a>
+	<a href="menu.jsp">Administrator menu</a>
+	<%
+		} else {
+	%>
+	<h1>Error</h1>
+	<p>You do not have the right to access this page. Please come back to the reception!</p>
+	<a href='home.jsp'>Home</a>
+	<%
+		}
+	%>	
 </body>
 </html>

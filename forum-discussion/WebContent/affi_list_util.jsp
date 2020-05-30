@@ -6,19 +6,19 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>List users</title>
+<title>User list</title>
 </head>
 <body>
 	<% 
 		String role = session.getAttribute("role").toString();
 		if ("admin".equalsIgnoreCase(role)) {
 	%>
-	<h1>Liste des utilisateurs</h1>
+	<h1>User list</h1>
 	<table>
 		<tr>
 			<th>ID</th>
-			<th>Nom & Prenom</th>
-			<th>Genre</th>
+			<th>Last name & first name</th>
+			<th>Gender</th>
 			<th>Login</th>
 			<th>Admin</th>
 		</tr>
@@ -32,26 +32,26 @@
 				<td>
 					<form action="UserManager" method="POST">
 						<input type="hidden" name="idModify" value="${user.id}">
-						<input type="submit" value="Modifier">
+						<input type="submit" value="Modify">
 					</form>
 				</td>
 				<td>
 					<form action="UserManager" method="POST">
 						<input type="hidden" name="idDelete" value="${user.id}">
-						<input type="submit" value="Supprimer">
+						<input type="submit" value="Delete">
 					</form>
 				</td>
 			</tr>
 		</c:forEach>
 	</table>
 	<br/>
-	<a href="menu.jsp">Menu administrateur</a>
+	<a href="menu.jsp">Administrator menu</a>
 	<%
 		} else {
 	%>
-	<h1>Erreur</h1>
-	<p> Vous n'avez pas droit à accéder à cette page. Veullez revenir vers l'accueil !</p>
-	<a href='home.jsp'>Accueil</a>
+	<h1>Error</h1>
+	<p>You do not have the right to access this page. Please come back to the reception!</p>
+	<a href='home.jsp'>Home</a>
 	<%
 		}
 	%>

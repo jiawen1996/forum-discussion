@@ -6,7 +6,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Menu administrateur</title>
+<title>Administrator menu</title>
 </head>
 <body>
 	<% 
@@ -15,26 +15,26 @@
 		session.setAttribute("role", role);
 		if ("admin".equalsIgnoreCase(role)) {
 	%>
-	<h1>Menu administrateur</h1>
-	<h3> Hello <%=session.getAttribute("login") %></h3>
+	<h1>Administrator menu</h1>
 	<nav>
-		<ul>
-			<li><a href='ajouter_nv_util.jsp'>Créer un nouveau
-				utilisateur</a></li>
-			<li><a href='UserManager'>Afficher la liste d'utilisateurs</a></li>
-			<li><a href='ajouter_nv_forum.jsp'>Créer un nouveau
-				forum</a></li>
-			<li><a href='ForumManager?allForum'>Afficher la liste de forums</a></li>
-			<li><a href='home.jsp'>Accueil</a></li>
-		</ul>
+		<dl>
+  			<dt>User</dt>
+  				<dd><a href='ajouter_nv_util.jsp'> - Create a new user</a></dd>
+  				<dd><a href='UserManager'>- Display user list</a></dd>
+  			<dt>Forum</dt>
+  				<dd><a href='ajouter_nv_forum.jsp'> - Create a new forum</a></dd>
+  				<dd><a href='ForumManager'>- Display list of forums</a></dd>
+		</dl>
+		
+		<a href='home.jsp'>Home</a>
 	</nav>
 
 	<%
 		} else {
 	%>
-	<h1>Erreur</h1>
-	<p> Vous n'avez pas droit à accéder à cette page. Veullez revenir vers l'accueil !</p>
-	<a href='home.jsp'>Accueil</a>
+	<h1>Error</h1>
+	<p>You do not have the right to access this page. Please come back to the reception!</p>
+	<a href='home.jsp'>Home</a>
 	<%
 		}
 	%>

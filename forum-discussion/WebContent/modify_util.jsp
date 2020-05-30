@@ -6,14 +6,14 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Modifier l'information d'un utilisateur</title>
+<title>Edit user information</title>
 </head>
 <body>
 	<% 
 		String role = session.getAttribute("role").toString();
 		if ("admin".equalsIgnoreCase(role)) {
 	%>
-	<h1>Modifier l'information d'un utilisateur</h1>
+	<h1>Edit user information</h1>
 	<form action="UserManager" method="POST">
 		<table>
 			<tr>
@@ -21,15 +21,15 @@
 				<td><c:out value="${modifUser.id}" /></td>
 			</tr>
 			<tr>
-				<td>Nom : </td> 
+				<td>Last name : </td> 
 				<td><input type="text" name="lastNameModif" placeholder="${modifUser.lastName}"></td>
 			</tr>
 			<tr>
-				<td>Prenom : </td>
+				<td>First name : </td>
 				<td><input type="text" name="firstNameModif" placeholder="${modifUser.firstName}"></td>
 			</tr>
 			<tr>
-				<td>Genre : </td>
+				<td>Gender : </td>
 				<td><input type="text" name="genderModif" placeholder="${modifUser.gender}"></td>
 			</tr>
 			<tr>
@@ -37,7 +37,7 @@
 				<td><input type="text" name="loginModif" placeholder="${modifUser.login}"></td>
 			</tr>
 			<tr>
-				<td>Mot de passe : </td>
+				<td>Password : </td>
 				<td><input type="text" name="pwdModif" placeholder="${modifUser.pwd}"></td>
 			</tr>
 			<tr>
@@ -45,16 +45,16 @@
 				<td><input type="number" name="isAdminModif" placeholder="${modifUser.isAdmin}"></td>
 			</tr>
 		</table>
-		<input type="submit" name="validModify" value="Modifier">
+		<input type="submit" name="validModify" value="Modify">
 	</form>
 	<br/>
-		<a href="menu.jsp">Menu administrateur</a>
-		<%
+	<a href="menu.jsp">Administrator menu</a>
+	<%
 		} else {
 	%>
-	<h1>Erreur</h1>
-	<p> Vous n'avez pas droit à accéder à cette page. Veullez revenir vers l'accueil !</p>
-	<a href='home.jsp'>Accueil</a>
+	<h1>Error</h1>
+	<p>You do not have the right to access this page. Please come back to the reception!</p>
+	<a href='home.jsp'>Home</a>
 	<%
 		}
 	%>

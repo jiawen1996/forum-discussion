@@ -20,6 +20,7 @@
 		</composite-id>
 
 		<property name="content" column="content" type="string" />
+		<property name="datePublication" column="date" type="timestamp" />
 		
 		<many-to-one name="editor" class="User" column="editor" cascade="none" />
 		<many-to-one name="destination" class="Forum" column="destination" insert="false" update="false" cascade="none"></many-to-one>

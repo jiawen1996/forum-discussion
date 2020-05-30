@@ -186,10 +186,10 @@ public class ForumDAOImpl implements IForumDAO<Forum> {
 			User user = (User)session.load(User.class, idUser);
 			
 			forum.addFollower(user);
-			user.addForumSubscriptions(forum);
+			//user.addForumSubscriptions(forum);
 			
 			session.save(forum);
-			session.save(user);
+			//session.save(user);
 			tx.commit();
 			
 			return true;
@@ -206,6 +206,32 @@ public class ForumDAOImpl implements IForumDAO<Forum> {
 	public void updateSubscribeUsers(Forum quitForum) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public void removeFollower(Integer idForum, Integer idUser) {
+		Session session = factory.openSession();
+		Transaction tx = null;
+
+		try {
+			
+			tx = session.beginTransaction();
+			Forum forum = (Forum)session.load(Forum.class, idForum); 
+			User user = (User)session.load(User.class, idUser);
+			
+			forum.removeFollower(user);
+			//user.removeForumSubscriptions(forum);
+			
+			session.save(forum);
+			//session.save(user);
+			tx.commit();
+			
+		} catch (HibernateException e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
 	}
 
 }

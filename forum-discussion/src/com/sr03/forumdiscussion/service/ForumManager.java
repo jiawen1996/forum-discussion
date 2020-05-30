@@ -42,7 +42,6 @@ public class ForumManager extends HttpServlet {
 		this.userDAO = new UserDAOImpl(); 
 	}
 
-	//OK
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
@@ -73,9 +72,19 @@ public class ForumManager extends HttpServlet {
 				e.printStackTrace();
 			}
 		}
+		
 		if (request.getParameter("idCreate") != null) {
 			try {
 				createForum(request, response);
+			} catch (ClassNotFoundException | IOException | SQLException | ServletException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		if (request.getParameter("idQuitForum") != null) {
+
+			try {
+				userUnsubscription(request, response);
 			} catch (ClassNotFoundException | IOException | SQLException | ServletException e) {
 				e.printStackTrace();
 			}
@@ -92,10 +101,6 @@ public class ForumManager extends HttpServlet {
 
 		try {
 			HttpSession session = request.getSession();
-			User user = (User) session.getAttribute("user");
-			List<Forum> listAllForums = (ArrayList<Forum>) ForumDAOImpl.FindAll();
-			
-			Set<Forum> followedForums = UserDAOImpl.FindById(user.getId()).get(0).getForumSubscriptions();
 
 			if (request.getParameter("idEnterForum") != null) {
 
@@ -104,48 +109,45 @@ public class ForumManager extends HttpServlet {
 				} catch (ClassNotFoundException | IOException | SQLException | ServletException e) {
 					e.printStackTrace();
 				}
-			}
-
-			if (request.getParameter("followedForum") != null) {
-				session.setAttribute("listForums", followedForums);
-				RequestDispatcher rd = request.getRequestDispatcher("followed_forum.jsp");
-				rd.include(request, response);
-			}
-
-			if (request.getParameter("allForum") != null) {
-				session.setAttribute("listForums", listAllForums);
-				RequestDispatcher rd = request.getRequestDispatcher("affi_list_forum.jsp");
-				rd.forward(request, response);
-			}
-
-			if (request.getParameter("publicForum") != null) {
-
-				List<Forum> publicForums = new ArrayList<Forum>();
+			} else {
+				session.removeAttribute("forumNoSubs");
+				session.removeAttribute("forumSubs");
+				
+				User user = (User) session.getAttribute("user");
+				List<Forum> allForums = (ArrayList<Forum>) ForumDAOImpl.FindAll();
+				Set<Forum> forumSubs = userDAO.getForumSubscriptions(user.getId());
+				
+				
 				// remove common forum
-				if (followedForums.size() > 0) {
-					for (Forum f : listAllForums) {
-						if (!followedForums.contains(f)) {
-							System.out.println("add no-followed forum");
-							publicForums.add(f);
+				if (forumSubs.size() > 0) {
+					List<Forum> forumNoSubs = new ArrayList<Forum>();
+					List<Integer> forumSubsID = new ArrayList<Integer>();
+					
+					for (Forum f : forumSubs) {
+						forumSubsID.add(f.getId());
+					}
+					
+//					System.out.println("forumSubsID : " + forumSubsID);
+					
+					for (Forum f : allForums) {
+//						System.out.println("f : " + f.getId());
+//						System.out.println("f if : " + forumSubsID.contains(f.getId()));
+						if (forumSubsID.contains(f.getId()) == false) {
+//							System.out.println("add");
+							forumNoSubs.add(f);
 						}
 					}
+					
+					session.setAttribute("forumNoSubs", forumNoSubs);
+					session.setAttribute("forumSubs", forumSubs);
+				} else {
+					session.setAttribute("forumNoSubs", allForums);
 				}
-				session.removeAttribute("listForums");
-				session.setAttribute("listForums", publicForums);
+				
 				RequestDispatcher rd = request.getRequestDispatcher("affi_list_forum.jsp");
 				rd.forward(request, response);
 			}
-
-			if (request.getParameter("idQuitForum") != null) {
-
-				try {
-					userUnsubscription(request, response);
-				} catch (ClassNotFoundException | IOException | SQLException | ServletException e) {
-					e.printStackTrace();
-				}
-			}
-
-
+			
 		} catch (SQLException | ClassNotFoundException ex) {
 			Logger.getLogger(ForumManager.class.getName()).log(Level.SEVERE, null, ex);
 		}
@@ -166,7 +168,6 @@ public class ForumManager extends HttpServlet {
 		HttpSession session = request.getSession();
 		RequestDispatcher rd = null;
 		Integer idEnterForum = Integer.parseInt(request.getParameter("idEnterForum"));
-		System.out.println("****** ID FORUM TO ENTER : " + idEnterForum);
 
 		if (session.getAttribute("login") == null) {
 			rd = request.getRequestDispatcher("echec_login.jsp");
@@ -182,12 +183,13 @@ public class ForumManager extends HttpServlet {
 				List<Message> listMessages = (ArrayList<Message>) MessageDAOImpl.FindAllByForum(currentForum);
 
 				session.setAttribute("forum", currentForum);
+				session.setAttribute("owner", currentForum.getOwner());
 				session.setAttribute("listMessages", listMessages);
 
 				rd = request.getRequestDispatcher("forum.jsp");
 			} else {
 				try (PrintWriter out = response.getWriter()) {
-					out.println("<h1> Impossible à s'abonner au forum : </h1>");
+					out.println("<h1> Unable to subscribe to the forum </h1>");
 					rd = request.getRequestDispatcher("erreur.jsp");
 				}
 			}
@@ -233,7 +235,7 @@ public class ForumManager extends HttpServlet {
 					forumDAO.addFollower(editForum.getId(), newOwner.getId());
 				} else {
 					try (PrintWriter out = response.getWriter()) {
-						out.println("<h1> Nouveau propriétaire invalide </h1>");
+						out.println("<h1> Invalid new owner </h1>");
 						RequestDispatcher rd = request.getRequestDispatcher("erreur.jsp");
 						rd.include(request, response);
 					}
@@ -256,8 +258,40 @@ public class ForumManager extends HttpServlet {
 
 			forumDAO._update(editForum);
 
-			List<Forum> listForums = (ArrayList<Forum>) ForumDAOImpl.FindAll();
-			session.setAttribute("listForums", listForums);
+			// Update attributes in session
+			session.removeAttribute("forumNoSubs");
+			session.removeAttribute("forumSubs");
+			
+			User user = (User) session.getAttribute("user");
+			List<Forum> allForums = (ArrayList<Forum>) ForumDAOImpl.FindAll();
+			Set<Forum> forumSubs = userDAO.getForumSubscriptions(user.getId());
+			
+			
+			// remove common forum
+			if (forumSubs.size() > 0) {
+				List<Forum> forumNoSubs = new ArrayList<Forum>();
+				List<Integer> forumSubsID = new ArrayList<Integer>();
+				
+				for (Forum f : forumSubs) {
+					forumSubsID.add(f.getId());
+				}
+				
+//				System.out.println("forumSubsID : " + forumSubsID);
+				
+				for (Forum f : allForums) {
+//					System.out.println("f : " + f.getId());
+//					System.out.println("f if : " + forumSubsID.contains(f.getId()));
+					if (forumSubsID.contains(f.getId()) == false) {
+//						System.out.println("add");
+						forumNoSubs.add(f);
+					}
+				}
+				
+				session.setAttribute("forumNoSubs", forumNoSubs);
+				session.setAttribute("forumSubs", forumSubs);
+			} else {
+				session.setAttribute("forumNoSubs", allForums);
+			}
 			
 			// End of modifying process
 			session.removeAttribute("owner");
@@ -335,7 +369,7 @@ public class ForumManager extends HttpServlet {
 				response.setContentType("text/html;charset=UTF-8");
 				
 				try (PrintWriter out = response.getWriter()) {
-					out.println("<h1> Un nouveau forum est ajouté : </h1>");
+					out.println("<h1> New forum created </h1>");
 					out.println(newForum.getTitle());
 					
 					RequestDispatcher rd = request.getRequestDispatcher("menu.jsp");
@@ -372,34 +406,72 @@ public class ForumManager extends HttpServlet {
 
 		response.setContentType("text/html;charset=UTF-8");
 		try (PrintWriter out = response.getWriter()) {
-			out.println("<h1> Success: supprimer un forum </h1>");
+			out.println("<h1> Successfully delete a forum </h1>");
 			RequestDispatcher rd = request.getRequestDispatcher("affi_list_forum.jsp");
 			rd.include(request, response);
 		}
 	}
 
 	// TODO
+	/**
+	 * User Unsubscribe a forum
+	 * If user is the owner, he can't see the forum in his list of subscriptions 
+	 * but he is still the owner
+	 * @param request
+	 * @param response
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 * @throws SQLException
+	 * @throws NumberFormatException
+	 * @throws ServletException
+	 */
 	private void userUnsubscription(HttpServletRequest request, HttpServletResponse response) throws ClassNotFoundException, IOException, SQLException, NumberFormatException, ServletException {
 		HttpSession session = request.getSession();
 		RequestDispatcher rd = null;
+		
 		Integer idQuitForum = Integer.parseInt(request.getParameter("idQuitForum"));
-		System.out.println("****** ID FORUM TO QUIT : " + idQuitForum);
 
 		if (session.getAttribute("login") == null) {
 			rd = request.getRequestDispatcher("echec_login.jsp");
 		} else {
 			User user = (User) session.getAttribute("user");
 			
-			Forum quitForum = ForumDAOImpl.FindById(idQuitForum).get(0);
+			forumDAO.removeFollower(idQuitForum, user.getId());
 			
-			quitForum.removeFollower(user);
-			user.removeForumSubscriptions(quitForum);
+			//Update attributes in session
+			session.removeAttribute("forumNoSubs");
+			session.removeAttribute("forumSubs");
 			
-			userDAO.updateForumSubscriptions(user);
-			forumDAO.updateSubscribeUsers(quitForum);
-
-			session.setAttribute("listForums", user.getForumSubscriptions());
-			rd = request.getRequestDispatcher("followed_forum.jsp");
+			List<Forum> allForums = (ArrayList<Forum>) ForumDAOImpl.FindAll();
+			Set<Forum> forumSubs = userDAO.getForumSubscriptions(user.getId());
+			
+			
+			// remove common forum
+			if (forumSubs.size() > 0) {
+				List<Forum> forumNoSubs = new ArrayList<Forum>();
+				List<Integer> forumSubsID = new ArrayList<Integer>();
+				
+				for (Forum f : forumSubs) {
+					forumSubsID.add(f.getId());
+				}
+				
+//				System.out.println("forumSubsID : " + forumSubsID);
+				
+				for (Forum f : allForums) {
+//					System.out.println("f : " + f.getId());
+//					System.out.println("f if : " + forumSubsID.contains(f.getId()));
+					if (forumSubsID.contains(f.getId()) == false) {
+						System.out.println("add");
+						forumNoSubs.add(f);
+					}
+				}
+				
+				session.setAttribute("forumNoSubs", forumNoSubs);
+				session.setAttribute("forumSubs", forumSubs);
+			} else {
+				session.setAttribute("forumNoSubs", allForums);
+			}
+			rd = request.getRequestDispatcher("affi_list_forum.jsp");
 			
 		}
 		rd.include(request, response);

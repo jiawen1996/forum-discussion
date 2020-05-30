@@ -22,26 +22,26 @@
 		Hello
 		<%=session.getAttribute("login")%></h3>
 	<nav>
-
-		| <a href='ForumManager?publicForum'>Afficher la liste de forums publiés</a> |
-		<a href='ForumManager?followedForum'>Afficher la liste de forums abonnés</a> |
+		| <a href='ForumManager'>List of forums</a> |
+		<!-- | <a href='ForumManager?publicForum'>Afficher la liste de forums publiés</a> |
+		<a href='ForumManager?followedForum'>Afficher la liste de forums abonnés</a> | -->
 		<%
 		if ("admin".equalsIgnoreCase(role)) {
 		%>
-		<a href='menu.jsp'>Menu administrateur</a> |
+		<a href='menu.jsp'>Administrator menu</a> |
 
 		<%
 			}
 		%>
-		<a href='Deconnexion'>Déconnecter</a> |
+		<a href='Deconnexion'>Sign out</a> |
 
 
 	</nav>
 	<footer>
-		<p>Posted by: Hege Refsnes</p>
+		<p>Posted by: Jiawen Lyu - Linh Nguyen</p>
 		<p>
-			Contact information: <a href="mailto:someone@example.com">
-				someone@example.com</a>.
+			Contact information: <a href="mailto:nguyetra@etu.utc.fr">
+				nguyetra@etu.utc.fr</a>.
 		</p>
 	</footer>
 </body>

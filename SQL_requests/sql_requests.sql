@@ -5,10 +5,17 @@ CREATE TABLE `db_sr03`.`forum` ( `id` int NOT NULL AUTO_INCREMENT, `title` varch
 ) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 
-CREATE TABLE `db_sr03`.`message` ( `id` int NOT NULL AUTO_INCREMENT, `content` MEDIUMTEXT NULL, `editor` int NOT NULL, `destination` int NOT NULL, INDEX `FK_editor_idx` (`editor` ASC) VISIBLE, INDEX `Fk_dest_idx` (`destination` ASC) VISIBLE, PRIMARY KEY (`id`), CONSTRAINT `FK_editor` FOREIGN KEY (`editor`) REFERENCES `db_sr03`.`user` (`id`
-) ON DELETE NO ACTION ON UPDATE NO ACTION, CONSTRAINT `Fk_dest` FOREIGN KEY (`destination`) REFERENCES `db_sr03`.`forum` (`id`
-) ON DELETE CASCADE ON UPDATE CASCADE
-);
+CREATE TABLE `db_sr03`.`message` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `content` mediumtext DEFAULT NULL,
+  `editor` int(11) NOT NULL,
+  `destination` int(11) NOT NULL,
+  `date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`,`destination`),
+  KEY `editor` (`editor`),
+  KEY `Fk_dest` (`destination`),
+  CONSTRAINT `Fk_dest` FOREIGN KEY (`destination`) REFERENCES `forum` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `message_ibfk_1` FOREIGN KEY (`editor`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 
 CREATE TABLE `db_sr03`.`subscriptions` ( `id_user` int NOT NULL, `id_forum` int NOT NULL, PRIMARY KEY (`id_user`, `id_forum`), INDEX `FK_subs_forum_idx` (`id_forum` ASC) VISIBLE, CONSTRAINT `FK_subs_user` FOREIGN KEY (`id_user`) REFERENCES `db_sr03`.`user` (`id`
 ) ON DELETE NO ACTION ON UPDATE NO ACTION, CONSTRAINT `FK_subs_forum` FOREIGN KEY (`id_forum`) REFERENCES `db_sr03`.`forum` (`id`

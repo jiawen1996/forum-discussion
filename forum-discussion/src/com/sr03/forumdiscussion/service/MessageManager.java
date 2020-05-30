@@ -68,7 +68,6 @@ public class MessageManager extends HttpServlet {
 
 			response.setContentType("text/html;charset=UTF-8");
 			try (PrintWriter out = response.getWriter()) {
-				out.println("<h1> Un nouveau message est ajouté : </h1>");
 				RequestDispatcher rd = request.getRequestDispatcher("forum.jsp");
 				rd.include(request, response);
 			}
@@ -81,14 +80,31 @@ public class MessageManager extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
-//	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-//			throws ServletException, IOException {
-//		try {
-//
-//		} catch (SQLException | ClassNotFoundException ex) {
-//			Logger.getLogger(ForumManager.class.getName()).log(Level.SEVERE, null, ex);
-//		}
-//	}
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		
+		HttpSession session = request.getSession();
+		Forum forum = (Forum) session.getAttribute("forum");
+		Integer idForum = forum.getId();
+		User owner = (User) session.getAttribute("owner");
+		
+		Forum currentForum;
+		List<Message> listMessages;
+		
+		try {
+			currentForum = ForumDAOImpl.FindById(idForum).get(0);
+			listMessages = (ArrayList<Message>) MessageDAOImpl.FindAllByForum(currentForum);
+			session.setAttribute("forum", currentForum);
+			session.setAttribute("owner", currentForum.getOwner());
+			session.setAttribute("listMessages", listMessages);
+
+		} catch (ClassNotFoundException | IOException | SQLException e) {
+			e.printStackTrace();
+		}
+
+		RequestDispatcher rd = request.getRequestDispatcher("forum.jsp");
+
+	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
