@@ -23,7 +23,7 @@
   				<dd><a href='UserManager'>- Display user list</a></dd>
   			<dt>Forum</dt>
   				<dd><a href='ajouter_nv_forum.jsp'> - Create a new forum</a></dd>
-  				<dd><a href='ForumManager?allForum'>- Display list of forums</a></dd>
+  				<dd><a href='ForumManager'>- Display list of forums</a></dd>
 		</dl>
 		
 		<a href='home.jsp'>Home</a>

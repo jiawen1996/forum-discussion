@@ -22,7 +22,7 @@
 		Hello
 		<%=session.getAttribute("login")%></h3>
 	<nav>
-		| <a href='ForumManager?showlistforums'>List of forums</a> |
+		| <a href='ForumManager'>List of forums</a> |
 		<!-- | <a href='ForumManager?publicForum'>Afficher la liste de forums publiés</a> |
 		<a href='ForumManager?followedForum'>Afficher la liste de forums abonnés</a> | -->
 		<%

@@ -193,8 +193,8 @@ public class UserDAOImpl implements IUserDAO<User> {
 
 	}
 
-	public Set<Forum> getForumSubscriptions(Integer id) throws ClassNotFoundException, IOException, SQLException {
-		User user = (User) FindById(id).get(0);
+	public Set<Forum> getForumSubscriptions(Integer idUser) throws ClassNotFoundException, IOException, SQLException {
+		User user = (User) FindById(idUser).get(0);
 		return user.getForumSubscriptions();
 	}
 }
