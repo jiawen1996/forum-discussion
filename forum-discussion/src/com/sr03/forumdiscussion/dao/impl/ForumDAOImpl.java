@@ -23,7 +23,6 @@ public class ForumDAOImpl implements IForumDAO<Forum> {
 
 	@Override
 	public Integer _insert(String title, String description, User owner) {
-		// TODO Auto-generated method stub
 		Session session = factory.openSession();
 		Transaction tx = null;
 		Integer ForumId = null;
@@ -132,17 +131,18 @@ public class ForumDAOImpl implements IForumDAO<Forum> {
 		return null;
 	}
 
-	public List<User> getListUsers(Integer id) {
+	//LoadForumSubscriptions()
+	public Set<User> getFollowers(Integer id) {
 		Session session = factory.openSession();
 		Transaction tx = null;
 		try {
 			tx = session.beginTransaction();
-			String hql = "select users from Forum where id = ?";
-			Query query = session.createQuery(hql, Forum.class);
-			query.setParameter(0, id);
-			List<User> listUsers = query.getResultList();
+			Forum forum = (Forum)session.load(Forum.class, id); 
+
+			Set<User> listFollowers = forum.getFollowers();
+
 			tx.commit();
-			return listUsers;
+			return listFollowers;
 		} catch (HibernateException e) {
 			if (tx != null)
 				tx.rollback();
@@ -153,6 +153,7 @@ public class ForumDAOImpl implements IForumDAO<Forum> {
 		return null;
 	}
 
+	// addForumSubscription() 
 	public boolean addFollower(Integer idForum, Integer idUser) {
 		Session session = factory.openSession();
 		Transaction tx = null;
@@ -163,11 +164,12 @@ public class ForumDAOImpl implements IForumDAO<Forum> {
 			Forum forum = (Forum)session.load(Forum.class, idForum); 
 			User user = (User)session.load(User.class, idUser);
 			
-			forum.addFollower(user);
-			//user.addForumSubscriptions(forum);
+			Set<User> followers = forum.getFollowers();
+			followers.add(user);
+			forum.setFollowers(followers);
 			
 			session.save(forum);
-			//session.save(user);
+	
 			tx.commit();
 			
 			return true;
@@ -180,12 +182,8 @@ public class ForumDAOImpl implements IForumDAO<Forum> {
 		}
 		return false;
 	}
-
-	public void updateSubscribeUsers(Forum quitForum) {
-		// TODO Auto-generated method stub
-		
-	}
 	
+	//deleteForumSubscription()
 	public void removeFollower(Integer idForum, Integer idUser) {
 		Session session = factory.openSession();
 		Transaction tx = null;
@@ -196,11 +194,12 @@ public class ForumDAOImpl implements IForumDAO<Forum> {
 			Forum forum = (Forum)session.load(Forum.class, idForum); 
 			User user = (User)session.load(User.class, idUser);
 			
-			forum.removeFollower(user);
-			//user.removeForumSubscriptions(forum);
+			Set<User> followers = forum.getFollowers();
+			followers.remove(user);
+			forum.setFollowers(followers);
 			
 			session.save(forum);
-			//session.save(user);
+
 			tx.commit();
 			
 		} catch (HibernateException e) {

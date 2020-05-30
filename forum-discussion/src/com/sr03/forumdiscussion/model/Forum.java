@@ -93,12 +93,12 @@ public class Forum {
 		return null;
 	}
 
-	public void LoadMessages() {
-
+	public Set<Message> LoadMessages() {
+		return messages;
 	}
 
-	public void addMessage() {
-
+	public void addMessage(Message msg) {
+		this.messages.add(msg);
 	}
 
 	public static List<Forum> FindAll() {
@@ -112,13 +112,4 @@ public class Forum {
 	public void setFollowers(Set<User> followers) {
 		this.followers = followers;
 	}
-	
-	public void removeFollower(User u) {
-		this.followers.remove(u);
-	}
-	
-	public void addFollower(User u) {
-		this.followers.add(u);
-	}
-
 }
