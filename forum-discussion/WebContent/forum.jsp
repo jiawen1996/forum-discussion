@@ -28,7 +28,12 @@
 				</tr>
 				<c:forEach items="${listMessages}" var="message">
 					<tr>
-						<td><c:out value="${message.editor}" /></td>
+						<c:if test="${empty message.editor}">
+							<td>anonyme</td>
+						</c:if>
+						<c:if test="${not empty message.editor}">
+							<td><c:out value="${message.editor}" /></td>
+						</c:if>
 						<td><c:out value="${message.content}" /></td>
 						<td><c:out value="${message.datePublication}" /></td>
 					</tr>

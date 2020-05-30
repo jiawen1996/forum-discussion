@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import com.sr03.forumdiscussion.model.Message;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -79,6 +80,19 @@ public class UserDAOImpl implements IUserDAO<User> {
 			tx = session.beginTransaction();
 			int userId = u.getId();
 			User user = (User) session.get(User.class, userId);
+
+			//supprimer des associsations avec message
+			Set<Message> messagesSet = user.getMessages();
+			for(Message m : messagesSet) {
+				m.setEditor(null);
+			}
+
+			//supprimer des associations avec subscriptions
+			Set<Forum> forumsSet = user.getForumSubscriptions();
+			for(Forum f : forumsSet) {
+				f.getFollowers().remove(user);
+			}
+			forumsSet.clear();
 			session.delete(user);
 			tx.commit();
 		} catch (HibernateException e) {
