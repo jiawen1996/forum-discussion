@@ -6,7 +6,7 @@
 
 <head>
 <meta charset="UTF-8">
-<!-- <meta http-equiv="refresh" content="30" url="MessageManager"> -->
+<meta http-equiv="refresh" content="60">
 <title><c:out value="${forum.title}" /></title>
 </head>
 

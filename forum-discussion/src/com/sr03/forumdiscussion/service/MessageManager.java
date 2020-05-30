@@ -63,15 +63,13 @@ public class MessageManager extends HttpServlet {
 				
 				session.setAttribute("forum", currentForum);
 				session.setAttribute("listMessages", listMessages);
-			}
-			
-
-			response.setContentType("text/html;charset=UTF-8");
-			try (PrintWriter out = response.getWriter()) {
+				
 				RequestDispatcher rd = request.getRequestDispatcher("forum.jsp");
-				rd.include(request, response);
+				rd.forward(request, response);
+			} else {
+				RequestDispatcher rd = request.getRequestDispatcher("erreur.jsp");
+				rd.forward(request, response);
 			}
-
 		}
 
 	}
@@ -86,7 +84,6 @@ public class MessageManager extends HttpServlet {
 		HttpSession session = request.getSession();
 		Forum forum = (Forum) session.getAttribute("forum");
 		Integer idForum = forum.getId();
-		User owner = (User) session.getAttribute("owner");
 		
 		Forum currentForum;
 		List<Message> listMessages;
@@ -103,6 +100,7 @@ public class MessageManager extends HttpServlet {
 		}
 
 		RequestDispatcher rd = request.getRequestDispatcher("forum.jsp");
+		rd.forward(request, response);
 
 	}
 
