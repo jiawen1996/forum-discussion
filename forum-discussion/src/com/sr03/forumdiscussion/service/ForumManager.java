@@ -101,7 +101,7 @@ public class ForumManager extends HttpServlet {
 
 		try {
 			HttpSession session = request.getSession();
-
+			//enter to forum or show list of forum
 			if (request.getParameter("idEnterForum") != null) {
 
 				try {
@@ -186,7 +186,7 @@ public class ForumManager extends HttpServlet {
 				session.setAttribute("owner", currentForum.getOwner());
 				session.setAttribute("listMessages", listMessages);
 
-				rd = request.getRequestDispatcher("forum.jsp");
+				rd = request.getRequestDispatcher("MessageManager");
 			} else {
 				try (PrintWriter out = response.getWriter()) {
 					out.println("<h1> Unable to subscribe to the forum </h1>");
@@ -194,7 +194,7 @@ public class ForumManager extends HttpServlet {
 				}
 			}
 		}
-		rd.include(request, response);
+		rd.forward(request, response);
 	}
 
 	//OK
