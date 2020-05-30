@@ -89,7 +89,6 @@ public class ForumManager extends HttpServlet {
 				e.printStackTrace();
 			}
 		}
-
 	}
 	
 	/**
@@ -126,14 +125,9 @@ public class ForumManager extends HttpServlet {
 					for (Forum f : forumSubs) {
 						forumSubsID.add(f.getId());
 					}
-					
-//					System.out.println("forumSubsID : " + forumSubsID);
-					
+
 					for (Forum f : allForums) {
-//						System.out.println("f : " + f.getId());
-//						System.out.println("f if : " + forumSubsID.contains(f.getId()));
 						if (forumSubsID.contains(f.getId()) == false) {
-//							System.out.println("add");
 							forumNoSubs.add(f);
 						}
 					}
@@ -153,7 +147,7 @@ public class ForumManager extends HttpServlet {
 		}
 	}
 
-	//OK
+
 	/**
 	 * User subscribe a forum 
 	 * @param request
@@ -197,7 +191,6 @@ public class ForumManager extends HttpServlet {
 		rd.forward(request, response);
 	}
 
-	//OK
 	/***
 	 * Admin modify forum's information such as : title, description and owner
 	 * @param request
@@ -252,9 +245,6 @@ public class ForumManager extends HttpServlet {
 
 			session.removeAttribute("editForum");
 			session.removeAttribute("owner");
-			System.out.println("******** MODIFY FORUM *************\n (id : " + editForum.getId() + "\n title : "
-					+ editForum.getTitle() + "\n description : " + editForum.getDescription() + "\n owner : "
-					+ editForum.getOwner().getLogin() + "\\n **********");
 
 			forumDAO._update(editForum);
 
@@ -276,13 +266,8 @@ public class ForumManager extends HttpServlet {
 					forumSubsID.add(f.getId());
 				}
 				
-//				System.out.println("forumSubsID : " + forumSubsID);
-				
 				for (Forum f : allForums) {
-//					System.out.println("f : " + f.getId());
-//					System.out.println("f if : " + forumSubsID.contains(f.getId()));
 					if (forumSubsID.contains(f.getId()) == false) {
-//						System.out.println("add");
 						forumNoSubs.add(f);
 					}
 				}
@@ -303,7 +288,7 @@ public class ForumManager extends HttpServlet {
 
 	}
 
-	//OK
+
 	/**
 	 * Redirect to a new page for modifying forum's info
 	 * @param request
@@ -334,7 +319,7 @@ public class ForumManager extends HttpServlet {
 
 	}
 
-	//OK
+
 	/**
 	 * Admin create a new forum
 	 *
@@ -412,7 +397,6 @@ public class ForumManager extends HttpServlet {
 		}
 	}
 
-	// TODO
 	/**
 	 * User Unsubscribe a forum
 	 * If user is the owner, he can't see the forum in his list of subscriptions 
@@ -455,11 +439,7 @@ public class ForumManager extends HttpServlet {
 					forumSubsID.add(f.getId());
 				}
 				
-//				System.out.println("forumSubsID : " + forumSubsID);
-				
 				for (Forum f : allForums) {
-//					System.out.println("f : " + f.getId());
-//					System.out.println("f if : " + forumSubsID.contains(f.getId()));
 					if (forumSubsID.contains(f.getId()) == false) {
 						System.out.println("add");
 						forumNoSubs.add(f);
@@ -474,9 +454,7 @@ public class ForumManager extends HttpServlet {
 			rd = request.getRequestDispatcher("affi_list_forum.jsp");
 			
 		}
-		rd.include(request, response);
-
-		
+		rd.include(request, response);		
 	}
 
 }

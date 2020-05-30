@@ -197,16 +197,15 @@ public class UserManager extends HttpServlet {
 				Byte res = Byte.parseByte(isAdmin);
 				modifUser.setIsAdmin(res);
 			}
-			System.out.println("******** MODIFY *************\n (id : " + modifUser.getId() + "\n lastName : " + modifUser.getLastName()
-								+ "\n firstName : " + modifUser.getFirstName()
-								+ "\n login : " + modifUser.getLogin()
-								+ "\n pwd : " + modifUser.getPwd()
-								+ "\n gender : " + modifUser.getGender() 
-								+ "\n isAdmin : " + modifUser.getIsAdmin() +" **********");
 			
 			UserDAOImpl userDAO = new UserDAOImpl();
 			userDAO._update(modifUser);
 			
+			//Update session
+			User user = (User) session.getAttribute("user");
+			user = UserDAOImpl.FindById(user.getId()).get(0);
+			session.setAttribute("user", user);
+
 			List<User> listUser = (ArrayList<User>) UserDAOImpl.FindAll();
 			session.setAttribute("listUser", listUser);
 			

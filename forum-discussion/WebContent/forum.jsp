@@ -45,6 +45,7 @@
 	</div>
 		
 	<br />
+	<a href="affi_list_forum.jsp">List forums</a><br />
 	<a href="home.jsp">Home</a>
 </body>
 
