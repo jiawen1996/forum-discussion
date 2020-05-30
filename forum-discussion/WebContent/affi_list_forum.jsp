@@ -9,14 +9,14 @@
 	<meta charset="UTF-8">
 	<!-- <link rel="stylesheet" type="text/css" href="WEB-INF/lib/bootstrap/css/bootstrap.min.css"> -->
 
-	<title>List forums</title>
+	<title>List of forums</title>
 </head>
 
 <body>
-	<h1>List forums</h1>
+	<h1>List of forums</h1>
 	<table class="table table-striped table-hover">
 		<tr class="thead-dark">
-			<th>User</th>
+			<th>ID</th>
 			<th>Title</th>
 			<th>Description</th>
 
@@ -39,20 +39,20 @@
 				<td>
 					<form action="ForumManager" method="POST">
 						<input type="hidden" name="idModify" value="${forum.id}">
-						<input type="submit" value="Modifier">
+						<input type="submit" value="Modify">
 					</form>
 				</td>
 				<td>
 					<form action="ForumManager" method="POST">
 						<input type="hidden" name="idDelete" value="${forum.id}">
-						<input type="submit" value="Supprimer">
+						<input type="submit" value="Delete">
 					</form>
 				</td>
 				<% } %>
 				<td>
 				<form action="ForumManager" method="GET">
 					<input type="hidden" name="idEnterForum" value="${forum.id}">
-					<input type="submit" value="Abonner">
+					<input type="submit" value="Subscribe">
 				</form>
 				</td>
 			</tr>

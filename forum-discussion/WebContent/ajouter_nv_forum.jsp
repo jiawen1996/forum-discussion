@@ -5,7 +5,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Créer un nouveau forum</title>
+    <title>Create a new forum</title>
 </head>
 
 <body>
@@ -13,6 +13,7 @@
 		String role = session.getAttribute("role").toString();
 		if ("admin".equalsIgnoreCase(role)) {
 	%>
+	<h1>Create a new forum</h1>
     <form action="ForumManager" method="post">
         <label> Title </label>
         <input type="text" id="title" name="Forum title" required/>
@@ -24,13 +25,13 @@
         <input type="submit" value="Submit">
     </form>
     <br/>
-	<a href="menu.jsp">Menu administrateur</a>
+	<a href="menu.jsp">Administrator menu</a>
 	<%
 		} else {
 	%>
-	<h1>Erreur</h1>
-	<p> Vous n'avez pas droit à accéder à cette page. Veullez revenir vers l'accueil !</p>
-	<a href='home.jsp'>Accueil</a>
+	<h1>Error</h1>
+	<p>You do not have the right to access this page. Please come back to the reception!</p>
+	<a href='home.jsp'>Home</a>
 	<%
 		}
 	%>

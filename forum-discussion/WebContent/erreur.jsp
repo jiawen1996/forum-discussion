@@ -4,10 +4,11 @@
 <html>
 <head>
 
-<title>Erreur</title>
+<title>Error</title>
 </head>
 <body>
-	<h1>Erreur</h1>
-	<h3>Impossible d'executer cette demande.</h3>
+	<h1>Error</h1>
+	<h3>Unable to execute this request</h3>
+	<a href='home.jsp'>Home</a>
 </body>
 </html>

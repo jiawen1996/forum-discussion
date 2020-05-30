@@ -4,9 +4,10 @@
 <html>
 <head>
 <meta http-equiv='refresh' content='5; URL=connexion.jsp' />
-<title>Déconnexion</title>
+<title>Sign out</title>
 </head>
 <body>
-	<h1>Vous êtes déconnecté et redirigé vers la page connexion </h1>
+	<h1>Sign out </h1>
+	<h3>You are logged out and redirected to the login page</h3>
 </body>
 </html>

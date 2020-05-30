@@ -4,10 +4,10 @@
 <html>
 <head>
 
-<title>Insert title here</title>
+<title>Login failure</title>
 </head>
 <body>
-	<h1>Vous n'êtes pas connecté ou vous n'êtes pas admin => redirigé
-		vers la page connexion</h1>
+	<h1>Login failure</h1>
+	<h3>You are not logged in or you are not admin => redirected to the login page</h3>
 </body>
 </html>
