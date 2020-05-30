@@ -84,20 +84,15 @@ public class UserDAOImpl implements IUserDAO<User> {
 
 			//delete forumSubscription 
 			Set<Forum> forumSubsUser = user.getForumSubscriptions();
-			Set<Forum> forumSubsAnonymous = anonymous.getForumSubscriptions();
 			
 			for (Forum f : forumSubsUser) {
 				if (f.getOwner().getId() == userId) {
 					f.setOwner(anonymous);
-					//f.getFollowers().remove(user);
-					//session.save(f);
 				}
+				f.getFollowers().remove(user);
+				session.save(f);
 			}
 			
-			forumSubsAnonymous.addAll(forumSubsUser);
-			anonymous.setForumSubscriptions(forumSubsAnonymous);
-			user.setForumSubscriptions(null);
-
 			//transfer all messages to anonymous user
 			Set<Message> messagesUser = user.getMessages();
 			Set<Message> messagesAnonymous = anonymous.getMessages();
@@ -105,14 +100,14 @@ public class UserDAOImpl implements IUserDAO<User> {
 			for (Message m : messagesUser) {
 				m.setEditor(anonymous);
 				messagesAnonymous.add(m);
+				user.getMessages().remove(m);
 			}
 
-			anonymous.setMessages(messagesAnonymous);
-			user.setMessages(null);
-			
+			anonymous.setMessages(messagesAnonymous); 
+
 			session.save(user);
 			session.save(anonymous);
-			//session.delete(user);
+			session.delete(user);
 			
 			tx.commit();
 		} catch (HibernateException e) {
