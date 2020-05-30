@@ -233,8 +233,12 @@ public class UserManager extends HttpServlet {
 			List<User> listUser = (ArrayList<User>)UserDAOImpl.FindAll();
 			session.setAttribute("listUser", listUser);
 			
-			RequestDispatcher rd = request.getRequestDispatcher("affi_list_util.jsp");
-			rd.include(request, response);
+			response.setContentType("text/html;charset=UTF-8");
+			try (PrintWriter out = response.getWriter()) {
+				out.println("<h1> Supprimer un utilisateur avec succes </h1>");
+				RequestDispatcher rd = request.getRequestDispatcher("affi_list_util.jsp");
+				rd.include(request, response);
+			}
 		}
 		
 	}

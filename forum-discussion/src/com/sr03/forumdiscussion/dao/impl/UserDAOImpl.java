@@ -15,6 +15,7 @@ import org.hibernate.query.Query;
 
 import com.sr03.forumdiscussion.dao.IUserDAO;
 import com.sr03.forumdiscussion.model.Forum;
+import com.sr03.forumdiscussion.model.Message;
 import com.sr03.forumdiscussion.model.User;
 
 public class UserDAOImpl implements IUserDAO<User> {
@@ -79,7 +80,40 @@ public class UserDAOImpl implements IUserDAO<User> {
 			tx = session.beginTransaction();
 			int userId = u.getId();
 			User user = (User) session.get(User.class, userId);
-			session.delete(user);
+			User anonymous = (User) session.get(User.class, 1);
+
+			//delete forumSubscription 
+			Set<Forum> forumSubsUser = user.getForumSubscriptions();
+			Set<Forum> forumSubsAnonymous = anonymous.getForumSubscriptions();
+			
+			for (Forum f : forumSubsUser) {
+				if (f.getOwner().getId() == userId) {
+					f.setOwner(anonymous);
+					//f.getFollowers().remove(user);
+					//session.save(f);
+				}
+			}
+			
+			forumSubsAnonymous.addAll(forumSubsUser);
+			anonymous.setForumSubscriptions(forumSubsAnonymous);
+			user.setForumSubscriptions(null);
+
+			//transfer all messages to anonymous user
+			Set<Message> messagesUser = user.getMessages();
+			Set<Message> messagesAnonymous = anonymous.getMessages();
+
+			for (Message m : messagesUser) {
+				m.setEditor(anonymous);
+				messagesAnonymous.add(m);
+			}
+
+			anonymous.setMessages(messagesAnonymous);
+			user.setMessages(null);
+			
+			session.save(user);
+			session.save(anonymous);
+			//session.delete(user);
+			
 			tx.commit();
 		} catch (HibernateException e) {
 			if (tx != null)
@@ -145,6 +179,10 @@ public class UserDAOImpl implements IUserDAO<User> {
 			Query<User> query = session.createQuery(hql, User.class);
 			listUsers = query.getResultList();
 			tx.commit();
+
+			// dont display anonymous user
+			listUsers.remove(0);
+
 			return listUsers;
 		} catch (HibernateException e) {
 			if (tx != null)

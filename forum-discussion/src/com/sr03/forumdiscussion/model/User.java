@@ -120,10 +120,6 @@ public class User {
 	public void setForumSubscriptions(Set<Forum> forumSubscriptions) {
 		this.forumSubscriptions = forumSubscriptions;
 	}
-	
-	public void addForumSubscriptions(Forum forum) {
-		this.forumSubscriptions.add(forum);
-	}
 
 	@Override
 	public int hashCode() {

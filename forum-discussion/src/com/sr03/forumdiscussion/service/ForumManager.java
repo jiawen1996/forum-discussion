@@ -173,6 +173,36 @@ public class ForumManager extends HttpServlet {
 			boolean res = forumDAO.addFollower(idEnterForum, idUser);
 
 			if (res) {
+				// Update attributes in session
+				session.removeAttribute("forumNoSubs");
+				session.removeAttribute("forumSubs");
+			
+				List<Forum> allForums = (ArrayList<Forum>) ForumDAOImpl.FindAll();
+				Set<Forum> forumSubs = userDAO.getForumSubscriptions(user.getId());
+				
+				
+				// remove common forum
+				if (forumSubs.size() > 0) {
+					List<Forum> forumNoSubs = new ArrayList<Forum>();
+					List<Integer> forumSubsID = new ArrayList<Integer>();
+					
+					for (Forum f : forumSubs) {
+						forumSubsID.add(f.getId());
+					}
+					
+					for (Forum f : allForums) {
+						if (forumSubsID.contains(f.getId()) == false) {
+							forumNoSubs.add(f);
+						}
+					}
+					
+					session.setAttribute("forumNoSubs", forumNoSubs);
+					session.setAttribute("forumSubs", forumSubs);
+				} else {
+					session.setAttribute("forumNoSubs", allForums);
+				}
+
+				// get forum data
 				Forum currentForum = ForumDAOImpl.FindById(idEnterForum).get(0);
 				List<Message> listMessages = (ArrayList<Message>) MessageDAOImpl.FindAllByForum(currentForum);
 
