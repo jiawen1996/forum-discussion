@@ -167,9 +167,4 @@ public class User {
 		this.messages = messages;
 	}
 
-	public void removeForumSubscriptions(Forum quitForum) {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

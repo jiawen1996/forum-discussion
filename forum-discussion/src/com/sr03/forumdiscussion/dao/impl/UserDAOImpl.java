@@ -162,10 +162,12 @@ public class UserDAOImpl implements IUserDAO<User> {
 		Transaction tx = null;
 		try {
 			tx = session.beginTransaction();
+			
 			String hql = "from User where fname = ? and lname = ?";
 			Query<User> query = session.createQuery(hql, User.class);
 			query.setParameter(0, fname);
 			query.setParameter(1, lname);
+			
 			List<User> res = query.getResultList();
 			tx.commit();
 			return res;
@@ -181,7 +183,7 @@ public class UserDAOImpl implements IUserDAO<User> {
 
 	//TODO
 	public void loadForumSubscriptions() {
-
+		
 	}
 
 	public void addForumSubscription() {
@@ -194,7 +196,28 @@ public class UserDAOImpl implements IUserDAO<User> {
 	}
 
 	public Set<Forum> getForumSubscriptions(Integer idUser) throws ClassNotFoundException, IOException, SQLException {
-		User user = (User) FindById(idUser).get(0);
-		return user.getForumSubscriptions();
+		Session session = factory.openSession();
+		Transaction tx = null;
+		try {
+			tx = session.beginTransaction();
+			
+			String hql = "from User where id = ?";
+			Query<User> query = session.createQuery(hql, User.class);
+			query.setParameter(0, idUser);
+			User user = query.getResultList().get(0);
+			
+			Set<Forum> listForums = user.getForumSubscriptions();
+			
+			tx.commit();
+			
+			return listForums;
+		} catch (HibernateException e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		return null;
 	}
 }
