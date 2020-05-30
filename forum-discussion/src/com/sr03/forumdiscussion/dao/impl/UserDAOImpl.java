@@ -50,7 +50,7 @@ public class UserDAOImpl implements IUserDAO<User> {
 		try {
 			tx = session.beginTransaction();
 			int userId = u.getId();
-			
+
 			User user = (User) session.get(User.class, userId);
 			user.setFirstName(u.getFirstName());
 			user.setLastName(u.getLastName());
@@ -58,7 +58,7 @@ public class UserDAOImpl implements IUserDAO<User> {
 			user.setGender(u.getGender());
 			user.setIsAdmin(u.getIsAdmin());
 			user.setPwd(u.getPwd());
-			
+
 			session.update(user);
 			tx.commit();
 		} catch (HibernateException e) {
@@ -75,24 +75,53 @@ public class UserDAOImpl implements IUserDAO<User> {
 	public void _delete(User u) {
 		Session session = factory.openSession();
 		Transaction tx = null;
-		
+
+		if (deleteAssoc(u)) {
+			try {
+				tx = session.beginTransaction();
+				int userId = u.getId();
+				User user = (User) session.get(User.class, userId);
+
+				session.delete(user);
+
+				tx.commit();
+			} catch (HibernateException e) {
+				if (tx != null)
+					tx.rollback();
+				e.printStackTrace();
+			} finally {
+				session.close();
+			}
+		}
+		return;
+	}
+
+	public boolean deleteAssoc(User u) {
+		Session session = factory.openSession();
+		Transaction tx = null;
+
 		try {
 			tx = session.beginTransaction();
 			int userId = u.getId();
 			User user = (User) session.get(User.class, userId);
 			User anonymous = (User) session.get(User.class, 1);
 
-			//delete forumSubscription 
-			Set<Forum> forumSubsUser = user.getForumSubscriptions();
-			
-			for (Forum f : forumSubsUser) {
-				if (f.getOwner().getId() == userId) {
-					f.setOwner(anonymous);
+			// delete forumSubscription
+			try {
+				List<Forum> listForums = ForumDAOImpl.FindAll();
+
+				for (Forum f : listForums) {
+					if (f.getOwner().getId() == userId) {
+						f.setOwner(anonymous);
+					}
+					f.getFollowers().remove(user);
+					session.save(f);
 				}
-				f.getFollowers().remove(user);
-				session.save(f);
+	
+			} catch (ClassNotFoundException | IOException | SQLException e) {
+				e.printStackTrace();
 			}
-			
+						
 			//transfer all messages to anonymous user
 			Set<Message> messagesUser = user.getMessages();
 			Set<Message> messagesAnonymous = anonymous.getMessages();
@@ -107,17 +136,17 @@ public class UserDAOImpl implements IUserDAO<User> {
 
 			session.save(user);
 			session.save(anonymous);
-			session.delete(user);
 			
 			tx.commit();
 		} catch (HibernateException e) {
 			if (tx != null)
 				tx.rollback();
 			e.printStackTrace();
+			return false;
 		} finally {
 			session.close();
 		}
-		return;
+		return true;
 	}
 
 	public static List<User> FindById(Integer id) throws IOException, ClassNotFoundException, SQLException {
