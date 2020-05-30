@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import com.sr03.forumdiscussion.model.Message;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -69,14 +70,35 @@ public class ForumDAOImpl implements IForumDAO<Forum> {
 	}
 
 	@Override
-	public void _delete(Forum f) {
+	public void _delete(Integer fId, Integer ownerId) {
 		Session session = factory.openSession();
 		Transaction tx = null;
 
 		try {
 			tx = session.beginTransaction();
-			int forumId = f.getId();
-			Forum forum = (Forum) session.get(Forum.class, forumId);
+			Forum forum = (Forum) session.get(Forum.class, fId);
+			User owner = (User) session.get(User.class, ownerId);
+
+			//supprimer l'association de owner
+			owner.getForumsCreatedByUser().remove(forum);
+
+			//supprimer des associations de destination avec message
+			Set<Message> messagesSet = forum.getMessages();
+			for(Message m : messagesSet) {
+				User editor = (User) session.get(User.class, m.getEditor().getId());
+				editor.getMessages().remove(m);
+				session.delete(m);
+			}
+			forum.getMessages().clear();
+
+			//supprimer des associations de subscriptions avec followers
+			Set<User> followersSet = forum.getFollowers();
+			for(User follower : followersSet) {
+				Set<Forum> forumsSubscription = follower.getForumSubscriptions();
+				forumsSubscription.remove(forum);
+			}
+			forum.getFollowers().clear();
+
 			session.delete(forum);
 			tx.commit();
 		} catch (HibernateException e) {

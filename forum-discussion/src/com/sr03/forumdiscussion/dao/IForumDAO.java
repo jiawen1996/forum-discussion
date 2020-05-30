@@ -7,5 +7,6 @@ public interface IForumDAO<Forum> {
 
 	public void _update(Forum f);
 
-	public void _delete(Forum f);
+	public void _delete(Integer fId, Integer uId);
+
 }

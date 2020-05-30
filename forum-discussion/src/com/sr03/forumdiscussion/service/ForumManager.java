@@ -365,7 +365,7 @@ public class ForumManager extends HttpServlet {
 		Forum forum = ForumDAOImpl.FindById(idForum).get(0);
 		System.out.println("******** id forum to delete : " + idForum + " **********");
 		
-		forumDAO._delete(forum);
+		forumDAO._delete(forum.getId(), currentUser.getId());
 
 		List<Forum> listForums = (ArrayList<Forum>) ForumDAOImpl.FindAll();
 		session.setAttribute("listForums", listForums);
