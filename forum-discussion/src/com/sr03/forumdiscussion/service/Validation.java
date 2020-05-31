@@ -68,42 +68,19 @@ public class Validation extends HttpServlet {
 					rd.include(request, response);
 					valid = false;
 
-				}
-
-				if (request.getParameter("validator") != null) {
-					// des doublons ont été détectés et l'utilisateur à valider son choix
-					if ("oui".equals(request.getParameter("valider"))) {
-						// on insère les doublons
-						valid = true;
-					} else {
-						valid = false;
-						RequestDispatcher rd = request.getRequestDispatcher("ajouter_nv_util.jsp");
-						// abandonnerl'insertion
-						rd.forward(request, response);
-					}
-
-				} else if (UserDAOImpl.FindByLastAndFirstName(firstName, lastName).size() != 0) {
+				} else if (UserDAOImpl.FindByloginAndPwd(login, password).size() != 0) {
 					valid = false;
 					try (PrintWriter out = response.getWriter()) {
 						out.println(
-								"<h1>Un utilisateur avec les mêmes nom et prénom existe déjà. Voulez-vous l'enregistrer ?  </h1>");
-						out.println("<form method='POST' action='Validation'>");
-						out.println("Oui <input type='radio' name='valider' value='oui' /> ");
-						out.println("Nom <input type='radio' name='valider' value='nom' />");
-						out.println("<input type='hidden' name='User first name' value='" + firstName + "'/>");
-						out.println("<input type='hidden' name='User familly name' value='" + lastName + "'/>");
-						out.println("<input type='hidden' name='User login' value='" + login + "'/>");
-						out.println("<input type='hidden' name='gender' value='" + gender + "'/>");
-						out.println("<input type='hidden' name='User password' value='" + password + "' />");
-						out.println("<br>");
-						out.println("<input type ='submit' value='Envoyer' name='validator' />");
-						out.println("</form>");
+								"<h1>A user with the same first and last name already exists. Please choose another login and password.</h1>");
 						RequestDispatcher rd=request.getRequestDispatcher("ajouter_nv_util.jsp");  
 				        rd.include(request, response); 
-						
 					}
-
+				} else {
+					valid = true;
 				}
+
+	
 				if (valid) {
 					request.setAttribute("addNewUser", "true");
 					RequestDispatcher rd = request.getRequestDispatcher("UserManager");
