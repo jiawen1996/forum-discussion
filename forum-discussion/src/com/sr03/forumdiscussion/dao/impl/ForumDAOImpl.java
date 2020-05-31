@@ -85,8 +85,10 @@ public class ForumDAOImpl implements IForumDAO<Forum> {
 			//supprimer des associations de destination avec message
 			Set<Message> messagesSet = forum.getMessages();
 			for(Message m : messagesSet) {
-				User editor = (User) session.get(User.class, m.getEditor().getId());
-				editor.getMessages().remove(m);
+				User editor = m.getEditor();
+				if(editor != null) {
+					editor.getMessages().remove(m);
+				}
 				session.delete(m);
 			}
 			forum.getMessages().clear();
