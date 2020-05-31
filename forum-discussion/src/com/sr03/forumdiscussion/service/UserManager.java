@@ -235,7 +235,7 @@ public class UserManager extends HttpServlet {
 			
 			response.setContentType("text/html;charset=UTF-8");
 			try (PrintWriter out = response.getWriter()) {
-				out.println("<h1> Supprimer un utilisateur avec succes </h1>");
+				out.println("<h1> Successfully delete an user </h1>");
 				RequestDispatcher rd = request.getRequestDispatcher("affi_list_util.jsp");
 				rd.include(request, response);
 			}
