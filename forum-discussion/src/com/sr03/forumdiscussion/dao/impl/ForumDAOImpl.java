@@ -15,6 +15,7 @@ import org.hibernate.query.Query;
 
 import com.sr03.forumdiscussion.dao.IForumDAO;
 import com.sr03.forumdiscussion.model.Forum;
+import com.sr03.forumdiscussion.model.Message;
 import com.sr03.forumdiscussion.model.User;
 
 public class ForumDAOImpl implements IForumDAO<Forum> {
@@ -76,6 +77,13 @@ public class ForumDAOImpl implements IForumDAO<Forum> {
 			tx = session.beginTransaction();
 			int forumId = f.getId();
 			Forum forum = (Forum) session.get(Forum.class, forumId);
+
+			// delete followers
+			Set<User> followers = forum.getFollowers();
+
+			// Work with forums hasn't message
+			followers.clear();
+
 			session.delete(forum);
 			tx.commit();
 		} catch (HibernateException e) {

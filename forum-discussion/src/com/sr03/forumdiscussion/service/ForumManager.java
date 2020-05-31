@@ -412,12 +412,45 @@ public class ForumManager extends HttpServlet {
 		HttpSession session = request.getSession();
 		User currentUser = (User) session.getAttribute("user");
 		Forum forum = ForumDAOImpl.FindById(idForum).get(0);
+		List<Message> messages = MessageDAOImpl.FindAllByForum(forum);
+		
 		System.out.println("******** id forum to delete : " + idForum + " **********");
 		
+		MessageDAOImpl messageDAO = new MessageDAOImpl();
+		for (Message m : messages) {
+			messageDAO._delete(m);
+		}
+
 		forumDAO._delete(forum);
 
-		List<Forum> listForums = (ArrayList<Forum>) ForumDAOImpl.FindAll();
-		session.setAttribute("listForums", listForums);
+		//Update attributes in session
+		session.removeAttribute("forumNoSubs");
+		session.removeAttribute("forumSubs");
+		
+		List<Forum> allForums = (ArrayList<Forum>) ForumDAOImpl.FindAll();
+		Set<Forum> forumSubs = userDAO.getForumSubscriptions(currentUser.getId());
+		
+		// remove common forum
+		if (forumSubs.size() > 0) {
+			List<Forum> forumNoSubs = new ArrayList<Forum>();
+			List<Integer> forumSubsID = new ArrayList<Integer>();
+			
+			for (Forum f : forumSubs) {
+				forumSubsID.add(f.getId());
+			}
+			
+			for (Forum f : allForums) {
+				if (forumSubsID.contains(f.getId()) == false) {
+					System.out.println("add");
+					forumNoSubs.add(f);
+				}
+			}
+			
+			session.setAttribute("forumNoSubs", forumNoSubs);
+			session.setAttribute("forumSubs", forumSubs);
+		} else {
+			session.setAttribute("forumNoSubs", allForums);
+		}
 
 		response.setContentType("text/html;charset=UTF-8");
 		try (PrintWriter out = response.getWriter()) {

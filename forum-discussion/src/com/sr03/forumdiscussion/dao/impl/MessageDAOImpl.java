@@ -48,9 +48,25 @@ public class MessageDAOImpl implements IMessageDAO<Message> {
 	}
 
 	@Override
-	public void _delete(Message f) {
-		
+	public void _delete(Message m) {
+		Session session = factory.openSession();
+		Transaction tx = null;
 
+		try {
+			tx = session.beginTransaction();
+			int msgId = m.getMessageId().getId();
+			Message message = (Message) session.get(Message.class, msgId);
+
+			session.delete(message);
+			tx.commit();
+		} catch (HibernateException e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		return;
 	}
 
 	public static List<Message> FindAllByForum(Forum forum) throws IOException, ClassNotFoundException, SQLException {
