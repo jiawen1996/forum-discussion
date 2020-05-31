@@ -77,30 +77,6 @@ public class UserDAOImpl implements IUserDAO<User> {
 		Session session = factory.openSession();
 		Transaction tx = null;
 
-		if (deleteAssoc(u)) {
-			try {
-				tx = session.beginTransaction();
-				int userId = u.getId();
-				User user = (User) session.get(User.class, userId);
-
-				session.delete(user);
-
-				tx.commit();
-			} catch (HibernateException e) {
-				if (tx != null)
-					tx.rollback();
-				e.printStackTrace();
-			} finally {
-				session.close();
-			}
-		}
-		return;
-	}
-
-	public boolean deleteAssoc(User u) {
-		Session session = factory.openSession();
-		Transaction tx = null;
-
 		try {
 			tx = session.beginTransaction();
 			int userId = u.getId();
@@ -124,11 +100,10 @@ public class UserDAOImpl implements IUserDAO<User> {
 			if (tx != null)
 				tx.rollback();
 			e.printStackTrace();
-			return false;
 		} finally {
 			session.close();
 		}
-		return true;
+		return;
 	}
 
 	public static List<User> FindById(Integer id) throws IOException, ClassNotFoundException, SQLException {
