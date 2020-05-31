@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import com.sr03.forumdiscussion.model.Message;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -104,39 +105,20 @@ public class UserDAOImpl implements IUserDAO<User> {
 			tx = session.beginTransaction();
 			int userId = u.getId();
 			User user = (User) session.get(User.class, userId);
-			User anonymous = (User) session.get(User.class, 1);
 
-			// delete forumSubscription
-			try {
-				List<Forum> listForums = ForumDAOImpl.FindAll();
-
-				for (Forum f : listForums) {
-					if (f.getOwner().getId() == userId) {
-						f.setOwner(anonymous);
-					}
-					f.getFollowers().remove(user);
-					session.save(f);
-				}
-	
-			} catch (ClassNotFoundException | IOException | SQLException e) {
-				e.printStackTrace();
-			}
-						
-			//transfer all messages to anonymous user
-			Set<Message> messagesUser = user.getMessages();
-			Set<Message> messagesAnonymous = anonymous.getMessages();
-
-			for (Message m : messagesUser) {
-				m.setEditor(anonymous);
-				messagesAnonymous.add(m);
-				user.getMessages().remove(m);
+			//supprimer des associsations avec message
+			Set<Message> messagesSet = user.getMessages();
+			for(Message m : messagesSet) {
+				m.setEditor(null);
 			}
 
-			anonymous.setMessages(messagesAnonymous); 
-
-			session.save(user);
-			session.save(anonymous);
-			
+			//supprimer des associations avec subscriptions
+			Set<Forum> forumsSet = user.getForumSubscriptions();
+			for(Forum f : forumsSet) {
+				f.getFollowers().remove(user);
+			}
+			forumsSet.clear();
+			session.delete(user);
 			tx.commit();
 		} catch (HibernateException e) {
 			if (tx != null)

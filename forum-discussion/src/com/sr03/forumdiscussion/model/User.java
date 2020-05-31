@@ -18,13 +18,23 @@ public class User {
 	private String firstName;
 	private String login; // mail adress
 	private String gender;
-	private String pwd;
+	private Set<Message> messages;
 
 	// Un Byte correspond à la colonne is_Admin
 	private Byte isAdmin;
 	private Role role = Role.Other;
 	private Set<Forum> forumSubscriptions;
-	private Set<Message> messages;
+	private String pwd;
+	private Set<Forum> forumsCreatedByUser;
+
+	public Set<Forum> getForumsCreatedByUser() {
+		return forumsCreatedByUser;
+	}
+
+	public void setForumsCreatedByUser(Set<Forum> forumsCreatedByUser) {
+		this.forumsCreatedByUser = forumsCreatedByUser;
+	}
+
 
 	private enum Role {
 		Other, Admin

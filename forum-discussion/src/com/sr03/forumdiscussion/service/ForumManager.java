@@ -416,12 +416,7 @@ public class ForumManager extends HttpServlet {
 		
 		System.out.println("******** id forum to delete : " + idForum + " **********");
 		
-		MessageDAOImpl messageDAO = new MessageDAOImpl();
-		for (Message m : messages) {
-			messageDAO._delete(m);
-		}
-
-		forumDAO._delete(forum);
+		forumDAO._delete(forum.getId(), currentUser.getId());
 
 		//Update attributes in session
 		session.removeAttribute("forumNoSubs");

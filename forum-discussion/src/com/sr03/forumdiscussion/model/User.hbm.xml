@@ -25,15 +25,24 @@
 		<property name="gender" column="gender" type="string" />
 		<property name="pwd" column="pwd" type="string" />
 
-
-		<set cascade="all" name="messages" table="db_sr03.message">
+<!--		on va garder des messages même si cette utilisateur a été supprimé-->
+		<set cascade="none" name="messages" table="db_sr03.message">
 			<!--la clé étrangère de la table message est editor -->
 			<key column="editor"></key>
 			<one-to-many class="Message" />
 		</set>
 
+		<!-- mapping de type one to many -->
+		<set inverse="true" name="forumsCreatedByUser" table="db_sr03.forum" cascade="none" lazy="false">
+			<!-- la clé étrangère de la table Forum est id -->
+			<key column="owner"></key>
+			<one-to-many class="Forum" ></one-to-many>
+		</set>
+
+
+
 		<!-- mapping de type many to many -->
-		<set cascade="all" name="forumSubscriptions"
+		<set cascade="none" name="forumSubscriptions"
 			table="db_sr03.subscriptions" inverse="true" lazy="false"
 			fetch="select">
 			<!-- la clé étrangère de la table Subscriptions est id_user -->
