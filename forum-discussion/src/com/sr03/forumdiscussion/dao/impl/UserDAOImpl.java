@@ -267,11 +267,9 @@ public class UserDAOImpl implements IUserDAO<User> {
 			Query<User> query = session.createQuery(hql, User.class);
 			query.setParameter(0, idUser);
 			User user = query.getResultList().get(0);
-			
-			Set<Forum> listForums = user.getForumSubscriptions();
-			
 			tx.commit();
-			
+
+			Set<Forum> listForums = user.getForumSubscriptions();
 			return listForums;
 		} catch (HibernateException e) {
 			if (tx != null)
